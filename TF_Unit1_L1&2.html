@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>True / False Questions - Technical Report Writing</title>
+<style>
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f3f4f6;
+    color: #1f2937;
+    margin: 0;
+    padding: 20px;
+  }
+  .container {
+    max-width: 800px;
+    margin: 0 auto;
+    background: #ffffff;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+  }
+  h1 {
+    text-align: center;
+    color: #1e3a8a;
+    margin-bottom: 5px;
+  }
+  .subtitle {
+    text-align: center;
+    color: #6b7280;
+    margin-bottom: 25px;
+    font-weight: 500;
+  }
+  .question-card {
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 18px;
+    margin-bottom: 18px;
+    background-color: #fafafa;
+  }
+  .question-title {
+    font-weight: 600;
+    font-size: 1.02rem;
+    color: #111827;
+    margin-bottom: 12px;
+  }
+  .options {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 12px 0;
+    display: flex;
+    gap: 15px;
+  }
+  .options li {
+    flex: 1;
+  }
+  .options label {
+    display: flex;
+    align-items: center;
+    padding: 10px 16px;
+    border-radius: 6px;
+    background: #ffffff;
+    border: 1px solid #d1d5db;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.2s;
+  }
+  .options label:hover {
+    background-color: #eff6ff;
+    border-color: #3b82f6;
+  }
+  .options input[type="radio"] {
+    margin-right: 10px;
+  }
+  .btn-ans {
+    background-color: #2563eb;
+    color: white;
+    border: none;
+    padding: 6px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 0.85rem;
+    transition: background 0.2s;
+  }
+  .btn-ans:hover {
+    background-color: #1d4ed8;
+  }
+  .answer-box {
+    display: none;
+    margin-top: 10px;
+    padding: 10px 14px;
+    background-color: #fef2f2;
+    border-left: 4px solid #ef4444;
+    color: #991b1b;
+    font-weight: 600;
+    border-radius: 4px;
+  }
+  .score-section {
+    text-align: center;
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 2px solid #e5e7eb;
+  }
+  .btn-calc {
+    background-color: #059669;
+    color: white;
+    border: none;
+    padding: 12px 28px;
+    font-size: 1.1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background 0.2s;
+  }
+  .btn-calc:hover {
+    background-color: #047857;
+  }
+  .score-display {
+    margin-top: 15px;
+    font-size: 1.4rem;
+    font-weight: bold;
+    color: #065f46;
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h1>Technical Report Writing</h1>
+  <div class="subtitle">Unit 1: True / False Questions Bank</div>
+
+  <form id="quizForm">
+
+    <!-- Q1 -->
+    <div class="question-card">
+      <div class="question-title">Q1. Effective communication is about transmitting your message to other people clearly and obviously.</div>
+      <ul class="options">
+        <li><label><input type="radio" name="tf1" value="A"> A. True</label></li>
+        <li><label><input type="radio" name="tf1" value="B"> B. False</label></li>
+      </ul>
+      <button type="button" class="btn-ans" onclick="toggleAnswer('ans1')">Show/Hide Answer</button>
+      <div id="ans1" class="answer-box">Correct Answer: A. True</div>
+    </div>
+
+    <!-- Q2 -->
+    <div class="question-card">
+      <div class="question-title">Q2. The further away your job is from manual work, the less important it is to know how to convey your thoughts.</div>
+      <ul class="options">
+        <li><label><input type="radio" name="tf2" value="A"> A. True</label></li>
+        <li><label><input type="radio" name="tf2" value="B"> B. False</label></li>
+      </ul>
+      <button type="button" class="btn-ans" onclick="toggleAnswer('ans2')">Show/Hide Answer</button>
+      <div id="ans2" class="answer-box">Correct Answer: B. False</div>
+    </div>
+
+    <!-- Q3 -->
+    <div class="question-card">
+      <div class="question-title">Q3. Sensing a need is the very first step in the communication process.</div>
+      <ul class="options">
+        <li><label><input type="radio" name="tf3" value="A"> A. True</label></li>
+        <li><label><input type="radio" name="tf3" value="B"> B. False</label></li>
+      </ul>
+      <button type="button" class="btn-ans" onclick="toggleAnswer('ans3')">Show/Hide Answer</button>
+      <div id="ans3" class="answer-box">Correct Answer: A. True</div>
+    </div>
+
+    <!-- Q4 -->
+    <div class="question-card">
+      <div class="question-title">Q4. In the communication process, "Defining the situation" involves making preliminary choices about the message content and format.</div>
+      <ul class="options">
+        <li><label><input type="radio" name="tf4" value="A"> A. True</label></li>
+        <li><label><input type="radio" name="tf4" value="B"> B. False</label></li>
+      </ul>
+      <button type="button" class="btn-ans" onclick="toggleAnswer('ans4')">Show/Hide Answer</button>
+      <div id="ans4" class="answer-box">Correct Answer: B. False</div>
+    </div>
+
+    <!-- Q5 -->
+    <div class="question-card">
+      <div class="question-title">Q5. "Considering possible communication strategies" means choosing between different options to solve a situation.</div>
+      <ul class="options">
+        <li><label><input type="radio" name="tf5" value="A"> A. True</label></li>
+        <li><label><input type="radio" name="tf5" value="B"> B. False</label></li>
+      </ul>
+      <button type="button" class="btn-ans" onclick="toggleAnswer('ans5')">Show/Hide Answer</button>
+      <div id="ans5" class="answer-box">Correct Answer: A. True</div>
+    </div>
+
+    <!-- Q6 -->
+    <div class="question-card">
+      <div class="question-title">Q6. If you decided to present the message orally, you should make notes or write the whole presentation during the "Composing the message" step.</div>
+      <ul class="options">
+        <li><label><input type="radio" name="tf6" value="A"> A. True</label></li>
+        <li><label><input type="radio" name="tf6" value="B"> B. False</label></li>
+      </ul>
+      <button type="button" class="btn-ans" onclick="toggleAnswer('ans6')">Show/Hide Answer</button>
+      <div id="ans6" class="answer-box">Correct Answer: A. True</div>
+    </div>
+
+    <!-- Q7 -->
+    <div class="question-card">
+      <div class="question-title">Q7. Interpreting the message is an activity done by the sender.</div>
+      <ul class="options">
+        <li><label><input type="radio" name="tf7" value="A"> A. True</label></li>
+        <li><label><input type="radio" name="tf7" value="B"> B. False</label></li>
+      </ul>
+      <button type="button" class="btn-ans" onclick="toggleAnswer('ans7')">Show/Hide Answer</button>
+      <div id="ans7" class="answer-box">Correct Answer: B. False</div>
+    </div>
+
+    <!-- Q8 -->
+    <div class="question-card">
+      <div class="question-title">Q8. Adapting your message carefully to your recipient increases the chance of achieving the desired response.</div>
+      <ul class="options">
+        <li><label><input type="radio" name="tf8" value="A"> A. True</label></li>
+        <li><label><input type="radio" name="tf8" value="B"> B. False</label></li>
+      </ul>
+      <button type="button" class="btn-ans" onclick="toggleAnswer('ans8')">Show/Hide Answer</button>
+      <div id="ans8" class="answer-box">Correct Answer: A. True</div>
+    </div>
+
+    <!-- Q9 -->
+    <div class="question-card">
+      <div class="question-title">Q9. Replying to the message is the final step in the communication process where the receiver acts as the communicator.</div>
+      <ul class="options">
+        <li><label><input type="radio" name="tf9" value="A"> A. True</label></li>
+        <li><label><input type="radio" name="tf9" value="B"> B. False</label></li>
+      </ul>
+      <button type="button" class="btn-ans" onclick="toggleAnswer('ans9')">Show/Hide Answer</button>
+      <div id="ans9" class="answer-box">Correct Answer: A. True</div>
+    </div>
+
+    <!-- Q10 -->
+    <div class="question-card">
+      <div class="question-title">Q10. Writing helps you think by finding logical faults in your own understanding.</div>
+      <ul class="options">
+        <li><label><input type="radio" name="tf10" value="A"> A. True</label></li>
+        <li><label><input type="radio" name="tf10" value="B"> B. False</label></li>
+      </ul>
+      <button type="button" class="btn-ans" onclick="toggleAnswer('ans10')">Show/Hide Answer</button>
+      <div id="ans10" class="answer-box">Correct Answer: A. True</div>
+    </div>
+
+    <!-- Q11 -->
+    <div class="question-card">
+      <div class="question-title">Q11. Making a list of pros and cons is considered a practical reason for writing.</div>
+      <ul class="options">
+        <li><label><input type="radio" name="tf11" value="A"> A. True</label></li>
+        <li><label><input type="radio" name="tf11" value="B"> B. False</label></li>
+      </ul>
+      <button type="button" class="btn-ans" onclick="toggleAnswer('ans11')">Show/Hide Answer</button>
+      <div id="ans11" class="answer-box">Correct Answer: B. False</div>
+    </div>
+
+    <!-- Q12 -->
+    <div class="question-card">
+      <div class="question-title">Q12. Applying for a job is considered an intellectual reason for writing.</div>
+      <ul class="options">
+        <li><label><input type="radio" name="tf12" value="A"> A. True</label></li>
+        <li><label><input type="radio" name="tf12" value="B"> B. False</label></li>
+      </ul>
+      <button type="button" class="btn-ans" onclick="toggleAnswer('ans12')">Show/Hide Answer</button>
+      <div id="ans12" class="answer-box">Correct Answer: B. False</div>
+    </div>
+
+    <!-- Q13 -->
+    <div class="question-card">
+      <div class="question-title">Q13. Writing your CV to reflect your qualification is a practical reason for learning writing skills.</div>
+      <ul class="options">
+        <li><label><input type="radio" name="tf13" value="A"> A. True</label></li>
+        <li><label><input type="radio" name="tf13" value="B"> B. False</label></li>
+      </ul>
+      <button type="button" class="btn-ans" onclick="toggleAnswer('ans13')">Show/Hide Answer</button>
+      <div id="ans13" class="answer-box">Correct Answer: A. True</div>
+    </div>
+
+    <!-- Q14 -->
+    <div class="question-card">
+      <div class="question-title">Q14. Web writing is always the best way of obtaining information because it contains no mistakes.</div>
+      <ul class="options">
+        <li><label><input type="radio" name="tf14" value="A"> A. True</label></li>
+        <li><label><input type="radio" name="tf14" value="B"> B. False</label></li>
+      </ul>
+      <button type="button" class="btn-ans" onclick="toggleAnswer('ans14')">Show/Hide Answer</button>
+      <div id="ans14" class="answer-box">Correct Answer: B. False</div>
+    </div>
+
+    <!-- Q15 -->
+    <div class="question-card">
+      <div class="question-title">Q15. Poor writing skills when presenting a business proposal might result in the rejection of the proposal.</div>
+      <ul class="options">
+        <li><label><input type="radio" name="tf15" value="A"> A. True</label></li>
+        <li><label><input type="radio" name="tf15" value="B"> B. False</label></li>
+      </ul>
+      <button type="button" class="btn-ans" onclick="toggleAnswer('ans15')">Show/Hide Answer</button>
+      <div id="ans15" class="answer-box">Correct Answer: A. True</div>
+    </div>
+
+    <!-- Q16 -->
+    <div class="question-card">
+      <div class="question-title">Q16. Because of technology advancement, the importance of writing is decreasing nowadays.</div>
+      <ul class="options">
+        <li><label><input type="radio" name="tf16" value="A"> A. True</label></li>
+        <li><label><input type="radio" name="tf16" value="B"> B. False</label></li>
+      </ul>
+      <button type="button" class="btn-ans" onclick="toggleAnswer('ans16')">Show/Hide Answer</button>
+      <div id="ans16" class="answer-box">Correct Answer: B. False</div>
+    </div>
+
+    <!-- Q17 -->
+    <div class="question-card">
+      <div class="question-title">Q17. Different situations may require different communication strategies.</div>
+      <ul class="options">
+        <li><label><input type="radio" name="tf17" value="A"> A. True</label></li>
+        <li><label><input type="radio" name="tf17" value="B"> B. False</label></li>
+      </ul>
+      <button type="button" class="btn-ans" onclick="toggleAnswer('ans17')">Show/Hide Answer</button>
+      <div id="ans17" class="answer-box">Correct Answer: A. True</div>
+    </div>
+
+    <!-- Q18 -->
+    <div class="question-card">
+      <div class="question-title">Q18. Writing skills are not essential because we can learn and read scientific research papers online.</div>
+      <ul class="options">
+        <li><label><input type="radio" name="tf18" value="A"> A. True</label></li>
+        <li><label><input type="radio" name="tf18" value="B"> B. False</label></li>
+      </ul>
+      <button type="button" class="btn-ans" onclick="toggleAnswer('ans18')">Show/Hide Answer</button>
+      <div id="ans18" class="answer-box">Correct Answer: B. False</div>
+    </div>
+
+    <!-- Q19 -->
+    <div class="question-card">
+      <div class="question-title">Q19. Internal operational communication includes advertising made to customers.</div>
+      <ul class="options">
+        <li><label><input type="radio" name="tf19" value="A"> A. True</label></li>
+        <li><label><input type="radio" name="tf19" value="B"> B. False</label></li>
+      </ul>
+      <button type="button" class="btn-ans" onclick="toggleAnswer('ans19')">Show/Hide Answer</button>
+      <div id="ans19" class="answer-box">Correct Answer: B. False</div>
+    </div>
+
+    <!-- Q20 -->
+    <div class="question-card">
+      <div class="question-title">Q20. Orders and instructions given by supervisors are examples of internal operational communication.</div>
+      <ul class="options">
+        <li><label><input type="radio" name="tf20" value="A"> A. True</label></li>
+        <li><label><input type="radio" name="tf20" value="B"> B. False</label></li>
+      </ul>
+      <button type="button" class="btn-ans" onclick="toggleAnswer('ans20')">Show/Hide Answer</button>
+      <div id="ans20" class="answer-box">Correct Answer: A. True</div>
+    </div>
+
+    <!-- Q21 -->
+    <div class="question-card">
+      <div class="question-title">Q21. Personal communication only occurs in personal life, never in the workplace.</div>
+      <ul class="options">
+        <li><label><input type="radio" name="tf21" value="A"> A. True</label></li>
+        <li><label><input type="radio" name="tf21" value="B"> B. False</label></li>
+      </ul>
+      <button type="button" class="btn-ans" onclick="toggleAnswer('ans21')">Show/Hide Answer</button>
+      <div id="ans21" class="answer-box">Correct Answer: B. False</div>
+    </div>
+
+    <!-- Q22 -->
+    <div class="question-card">
+      <div class="question-title">Q22. A business message must fulfill a degree of formality in transmission to achieve its goal.</div>
+      <ul class="options">
+        <li><label><input type="radio" name="tf22" value="A"> A. True</label></li>
+        <li><label><input type="radio" name="tf22" value="B"> B. False</label></li>
+      </ul>
+      <button type="button" class="btn-ans" onclick="toggleAnswer('ans22')">Show/Hide Answer</button>
+      <div id="ans22" class="answer-box">Correct Answer: A. True</div>
+    </div>
+
+    <!-- Q23 -->
+    <div class="question-card">
+      <div class="question-title">Q23. Verbal business messages are frequently passed on to carry out routine business activities.</div>
+      <ul class="options">
+        <li><label><input type="radio" name="tf23" value="A"> A. True</label></li>
+        <li><label><input type="radio" name="tf23" value="B"> B. False</label></li>
+      </ul>
+      <button type="button" class="btn-ans" onclick="toggleAnswer('ans23')">Show/Hide Answer</button>
+      <div id="ans23" class="answer-box">Correct Answer: A. True</div>
+    </div>
+
+    <!-- Q24 -->
+    <div class="question-card">
+      <div class="question-title">Q24. The written business message is used when the information being passed on needs to be filed and compiled.</div>
+      <ul class="options">
+        <li><label><input type="radio" name="tf24" value="A"> A. True</label></li>
+        <li><label><input type="radio" name="tf24" value="B"> B. False</label></li>
+      </ul>
+      <button type="button" class="btn-ans" onclick="toggleAnswer('ans24')">Show/Hide Answer</button>
+      <div id="ans24" class="answer-box">Correct Answer: A. True</div>
+    </div>
+
+    <!-- Q25 -->
+    <div class="question-card">
+      <div class="question-title">Q25. A routine business message can be used to commend an employee for a well-done job.</div>
+      <ul class="options">
+        <li><label><input type="radio" name="tf25" value="A"> A. True</label></li>
+        <li><label><input type="radio" name="tf25" value="B"> B. False</label></li>
+      </ul>
+      <button type="button" class="btn-ans" onclick="toggleAnswer('ans25')">Show/Hide Answer</button>
+      <div id="ans25" class="answer-box">Correct Answer: B. False</div>
+    </div>
+
+    <!-- Q26 -->
+    <div class="question-card">
+      <div class="question-title">Q26. A negative business message aims to convey frustration without being rude, maintaining professionalism.</div>
+      <ul class="options">
+        <li><label><input type="radio" name="tf26" value="A"> A. True</label></li>
+        <li><label><input type="radio" name="tf26" value="B"> B. False</label></li>
+      </ul>
+      <button type="button" class="btn-ans" onclick="toggleAnswer('ans26')">Show/Hide Answer</button>
+      <div id="ans26" class="answer-box">Correct Answer: A. True</div>
+    </div>
+
+    <!-- Q27 -->
+    <div class="question-card">
+      <div class="question-title">Q27. A sales letter persuading the reader to buy a product is an example of a persuasive business message.</div>
+      <ul class="options">
+        <li><label><input type="radio" name="tf27" value="A"> A. True</label></li>
+        <li><label><input type="radio" name="tf27" value="B"> B. False</label></li>
+      </ul>
+      <button type="button" class="btn-ans" onclick="toggleAnswer('ans27')">Show/Hide Answer</button>
+      <div id="ans27" class="answer-box">Correct Answer: A. True</div>
+    </div>
+
+    <div class="score-section">
+      <button type="button" class="btn-calc" onclick="calculateScore()">Calculate Final Score</button>
+      <div id="scoreResult" class="score-display"></div>
+    </div>
+
+  </form>
+</div>
+
+<script>
+  const correctAnswers = {
+    tf1: 'A', tf2: 'B', tf3: 'A', tf4: 'B', tf5: 'A',
+    tf6: 'A', tf7: 'B', tf8: 'A', tf9: 'A', tf10: 'A',
+    tf11: 'B', tf12: 'B', tf13: 'A', tf14: 'B', tf15: 'A',
+    tf16: 'B', tf17: 'A', tf18: 'B', tf19: 'B', tf20: 'A',
+    tf21: 'B', tf22: 'A', tf23: 'A', tf24: 'A', tf25: 'B',
+    tf26: 'A', tf27: 'A'
+  };
+
+  function toggleAnswer(id) {
+    const box = document.getElementById(id);
+    if (box.style.display === "block") {
+      box.style.display = "none";
+    } else {
+      box.style.display = "block";
+    }
+  }
+
+  function calculateScore() {
+    let score = 0;
+    const total = Object.keys(correctAnswers).length;
+    
+    for (let key in correctAnswers) {
+      const selected = document.querySelector(`input[name="${key}"]:checked`);
+      if (selected && selected.value === correctAnswers[key]) {
+        score++;
+      }
+    }
+    
+    const resultDiv = document.getElementById('scoreResult');
+    resultDiv.innerHTML = `Your Score: ${score} / ${total}`;
+  }
+</script>
+
+</body>
+</html>

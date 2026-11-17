@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Interactive Question Bank - Technical Report Writing</title>
+<style>
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f3f4f6;
+    color: #1f2937;
+    margin: 0;
+    padding: 20px;
+  }
+  .container {
+    max-width: 800px;
+    margin: 0 auto;
+    background: #ffffff;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+  }
+  h1 {
+    text-align: center;
+    color: #1e3a8a;
+    margin-bottom: 5px;
+  }
+  .subtitle {
+    text-align: center;
+    color: #6b7280;
+    margin-bottom: 25px;
+    font-weight: 500;
+  }
+  .question-card {
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 18px;
+    margin-bottom: 20px;
+    background-color: #fafafa;
+  }
+  .question-title {
+    font-weight: 600;
+    font-size: 1.05rem;
+    color: #111827;
+    margin-bottom: 12px;
+  }
+  .options {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 12px 0;
+  }
+  .options li {
+    margin-bottom: 8px;
+  }
+  .options label {
+    display: flex;
+    align-items: center;
+    padding: 10px 14px;
+    border-radius: 6px;
+    background: #ffffff;
+    border: 1px solid #d1d5db;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .options label:hover {
+    background-color: #eff6ff;
+    border-color: #3b82f6;
+  }
+  .options input[type="radio"] {
+    margin-right: 12px;
+  }
+  .btn-ans {
+    background-color: #2563eb;
+    color: white;
+    border: none;
+    padding: 7px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 0.88rem;
+    transition: background 0.2s;
+  }
+  .btn-ans:hover {
+    background-color: #1d4ed8;
+  }
+  .answer-box {
+    display: none;
+    margin-top: 10px;
+    padding: 10px 14px;
+    background-color: #fef2f2;
+    border-left: 4px solid #ef4444;
+    color: #991b1b;
+    font-weight: 600;
+    border-radius: 4px;
+  }
+  .score-section {
+    text-align: center;
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 2px solid #e5e7eb;
+  }
+  .btn-calc {
+    background-color: #059669;
+    color: white;
+    border: none;
+    padding: 12px 28px;
+    font-size: 1.1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background 0.2s;
+  }
+  .btn-calc:hover {
+    background-color: #047857;
+  }
+  .score-display {
+    margin-top: 15px;
+    font-size: 1.4rem;
+    font-weight: bold;
+    color: #065f46;
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h1>Technical Report Writing</h1>
+  <div class="subtitle">Interactive Question Bank - Unit 1</div>
+
+  <form id="quizForm">
+
+    <!-- Q1 -->
+    <div class="question-card">
+      <div class="question-title">Q1. In the communication process, which step involves extracting information, guessing the purpose, and making judgments?</div>
+      <ul class="options">
+        <li><label><input type="radio" name="q1" value="A"> A. Sending the message</label></li>
+        <li><label><input type="radio" name="q1" value="B"> B. Interpreting the message</label></li>
+        <li><label><input type="radio" name="q1" value="C"> C. Selecting a course of action</label></li>
+        <li><label><input type="radio" name="q1" value="D"> D. Composing the message</label></li>
+      </ul>
+      <button type="button" class="btn-ans" onclick="toggleAnswer('ans1')">Show/Hide Answer</button>
+      <div id="ans1" class="answer-box">Correct Answer: B. Interpreting the message</div>
+    </div>
+
+    <!-- Q2 -->
+    <div class="question-card">
+      <div class="question-title">Q2. Which of the following is considered an "Intellectual reason" for writing?</div>
+      <ul class="options">
+        <li><label><input type="radio" name="q2" value="A"> A. Applying for a Job</label></li>
+        <li><label><input type="radio" name="q2" value="B"> B. Create Large Amounts of Information</label></li>
+        <li><label><input type="radio" name="q2" value="C"> C. Business Communication</label></li>
+        <li><label><input type="radio" name="q2" value="D"> D. Web Writing</label></li>
+      </ul>
+      <button type="button" class="btn-ans" onclick="toggleAnswer('ans2')">Show/Hide Answer</button>
+      <div id="ans2" class="answer-box">Correct Answer: B. Create Large Amounts of Information</div>
+    </div>
+
+    <!-- Q3 -->
+    <div class="question-card">
+      <div class="question-title">Q3. Summarizing your reading for future reference is an example of which reason for writing?</div>
+      <ul class="options">
+        <li><label><input type="radio" name="q3" value="A"> A. Writing helps you think</label></li>
+        <li><label><input type="radio" name="q3" value="B"> B. Applying for a job</label></li>
+        <li><label><input type="radio" name="q3" value="C"> C. Create Large Amounts of Information</label></li>
+        <li><label><input type="radio" name="q3" value="D"> D. Government</label></li>
+      </ul>
+      <button type="button" class="btn-ans" onclick="toggleAnswer('ans3')">Show/Hide Answer</button>
+      <div id="ans3" class="answer-box">Correct Answer: C. Create Large Amounts of Information</div>
+    </div>
+
+    <!-- Q4 -->
+    <div class="question-card">
+      <div class="question-title">Q4. Which practical reason for writing involves filling out different forms and applications?</div>
+      <ul class="options">
+        <li><label><input type="radio" name="q4" value="A"> A. Applying for a Job</label></li>
+        <li><label><input type="radio" name="q4" value="B"> B. Education and Scientific Papers</label></li>
+        <li><label><input type="radio" name="q4" value="C"> C. Government</label></li>
+        <li><label><input type="radio" name="q4" value="D"> D. Web Writing</label></li>
+      </ul>
+      <button type="button" class="btn-ans" onclick="toggleAnswer('ans4')">Show/Hide Answer</button>
+      <div id="ans4" class="answer-box">Correct Answer: C. Government</div>
+    </div>
+
+    <!-- Q5 -->
+    <div class="question-card">
+      <div class="question-title">Q5. When we consider the communication activities of an organization from an overall point of view, the activities fall into three broad categories:</div>
+      <ul class="options">
+        <li><label><input type="radio" name="q5" value="A"> A. electronic, face-to-face, and internal</label></li>
+        <li><label><input type="radio" name="q5" value="B"> B. external operational, external, and personal</label></li>
+        <li><label><input type="radio" name="q5" value="C"> C. internal operational, external operational, and personal</label></li>
+        <li><label><input type="radio" name="q5" value="D"> D. operational, face-to-face, and personal</label></li>
+      </ul>
+      <button type="button" class="btn-ans" onclick="toggleAnswer('ans5')">Show/Hide Answer</button>
+      <div id="ans5" class="answer-box">Correct Answer: C. internal operational, external operational, and personal</div>
+    </div>
+
+    <!-- Q6 -->
+    <div class="question-card">
+      <div class="question-title">Q6. External communication can involve communicating with all below except:</div>
+      <ul class="options">
+        <li><label><input type="radio" name="q6" value="A"> A. Suppliers</label></li>
+        <li><label><input type="radio" name="q6" value="B"> B. service companies</label></li>
+        <li><label><input type="radio" name="q6" value="C"> C. customers</label></li>
+        <li><label><input type="radio" name="q6" value="D"> D. Colleagues</label></li>
+      </ul>
+      <button type="button" class="btn-ans" onclick="toggleAnswer('ans6')">Show/Hide Answer</button>
+      <div id="ans6" class="answer-box">Correct Answer: D. Colleagues</div>
+    </div>
+
+    <!-- Q7 -->
+    <div class="question-card">
+      <div class="question-title">Q7. Which type of communication helps in making and sustaining the relationships upon which business depends and affects employees' productivity?</div>
+      <ul class="options">
+        <li><label><input type="radio" name="q7" value="A"> A. External operational communication</label></li>
+        <li><label><input type="radio" name="q7" value="B"> B. Internal operational communication</label></li>
+        <li><label><input type="radio" name="q7" value="C"> C. Personal communication</label></li>
+        <li><label><input type="radio" name="q7" value="D"> D. Conceptual communication</label></li>
+      </ul>
+      <button type="button" class="btn-ans" onclick="toggleAnswer('ans7')">Show/Hide Answer</button>
+      <div id="ans7" class="answer-box">Correct Answer: C. Personal communication</div>
+    </div>
+
+    <!-- Q8 -->
+    <div class="question-card">
+      <div class="question-title">Q8. Which type of business message is considered the primary mode of passing a message to carry out routine business activities?</div>
+      <ul class="options">
+        <li><label><input type="radio" name="q8" value="A"> A. Written Business Message</label></li>
+        <li><label><input type="radio" name="q8" value="B"> B. Verbal Business Message</label></li>
+        <li><label><input type="radio" name="q8" value="C"> C. Negative Business Message</label></li>
+        <li><label><input type="radio" name="q8" value="D"> D. Persuasive Business Message</label></li>
+      </ul>
+      <button type="button" class="btn-ans" onclick="toggleAnswer('ans8')">Show/Hide Answer</button>
+      <div id="ans8" class="answer-box">Correct Answer: B. Verbal Business Message</div>
+    </div>
+
+    <!-- Q9 -->
+    <div class="question-card">
+      <div class="question-title">Q9. Which type of business message is used to convey details about an upcoming event, like a monthly staff meeting date?</div>
+      <ul class="options">
+        <li><label><input type="radio" name="q9" value="A"> A. Routine Business Message</label></li>
+        <li><label><input type="radio" name="q9" value="B"> B. Negative Business Message</label></li>
+        <li><label><input type="radio" name="q9" value="C"> C. Persuasive Business Message</label></li>
+        <li><label><input type="radio" name="q9" value="D"> D. Positive Business Message</label></li>
+      </ul>
+      <button type="button" class="btn-ans" onclick="toggleAnswer('ans9')">Show/Hide Answer</button>
+      <div id="ans9" class="answer-box">Correct Answer: A. Routine Business Message</div>
+    </div>
+
+    <!-- Q10 -->
+    <div class="question-card">
+      <div class="question-title">Q10. Commending a salesman for having reached the month's quota is an example of a:</div>
+      <ul class="options">
+        <li><label><input type="radio" name="q10" value="A"> A. Negative Business Message</label></li>
+        <li><label><input type="radio" name="q10" value="B"> B. Routine Business Message</label></li>
+        <li><label><input type="radio" name="q10" value="C"> C. Positive Business Message</label></li>
+        <li><label><input type="radio" name="q10" value="D"> D. Persuasive Business Message</label></li>
+      </ul>
+      <button type="button" class="btn-ans" onclick="toggleAnswer('ans10')">Show/Hide Answer</button>
+      <div id="ans10" class="answer-box">Correct Answer: C. Positive Business Message</div>
+    </div>
+
+    <!-- Q11 -->
+    <div class="question-card">
+      <div class="question-title">Q11. A delay notification and a financial penalty warning sent to non-punctual employees is an example of a:</div>
+      <ul class="options">
+        <li><label><input type="radio" name="q11" value="A"> A. Persuasive Business Message</label></li>
+        <li><label><input type="radio" name="q11" value="B"> B. Negative Business Message</label></li>
+        <li><label><input type="radio" name="q11" value="C"> C. Routine Business Message</label></li>
+        <li><label><input type="radio" name="q11" value="D"> D. Written Business Message</label></li>
+      </ul>
+      <button type="button" class="btn-ans" onclick="toggleAnswer('ans11')">Show/Hide Answer</button>
+      <div id="ans11" class="answer-box">Correct Answer: B. Negative Business Message</div>
+    </div>
+
+    <!-- Q12 -->
+    <div class="question-card">
+      <div class="question-title">Q12. There are many types of business message which are:</div>
+      <ul class="options">
+        <li><label><input type="radio" name="q12" value="A"> A. Verbal business message.</label></li>
+        <li><label><input type="radio" name="q12" value="B"> B. Written business message.</label></li>
+        <li><label><input type="radio" name="q12" value="C"> C. Persuasive business message.</label></li>
+        <li><label><input type="radio" name="q12" value="D"> D. All of the above.</label></li>
+      </ul>
+      <button type="button" class="btn-ans" onclick="toggleAnswer('ans12')">Show/Hide Answer</button>
+      <div id="ans12" class="answer-box">Correct Answer: D. All of the above.</div>
+    </div>
+
+    <!-- Q13 -->
+    <div class="question-card">
+      <div class="question-title">Q13. The business message could not be:</div>
+      <ul class="options">
+        <li><label><input type="radio" name="q13" value="A"> A. Verbal.</label></li>
+        <li><label><input type="radio" name="q13" value="B"> B. Conceptual.</label></li>
+        <li><label><input type="radio" name="q13" value="C"> C. Positive.</label></li>
+        <li><label><input type="radio" name="q13" value="D"> D. Persuasive.</label></li>
+      </ul>
+      <button type="button" class="btn-ans" onclick="toggleAnswer('ans13')">Show/Hide Answer</button>
+      <div id="ans13" class="answer-box">Correct Answer: B. Conceptual.</div>
+    </div>
+
+    <div class="score-section">
+      <button type="button" class="btn-calc" onclick="calculateScore()">Calculate Final Score</button>
+      <div id="scoreResult" class="score-display"></div>
+    </div>
+
+  </form>
+</div>
+
+<script>
+  const correctAnswers = {
+    q1: 'B', q2: 'B', q3: 'C', q4: 'C', q5: 'C',
+    q6: 'D', q7: 'C', q8: 'B', q9: 'A', q10: 'C',
+    q11: 'B', q12: 'D', q13: 'B'
+  };
+
+  function toggleAnswer(id) {
+    const box = document.getElementById(id);
+    if (box.style.display === "block") {
+      box.style.display = "none";
+    } else {
+      box.style.display = "block";
+    }
+  }
+
+  function calculateScore() {
+    let score = 0;
+    const total = Object.keys(correctAnswers).length;
+    
+    for (let key in correctAnswers) {
+      const selected = document.querySelector(`input[name="${key}"]:checked`);
+      if (selected && selected.value === correctAnswers[key]) {
+        score++;
+      }
+    }
+    
+    const resultDiv = document.getElementById('scoreResult');
+    resultDiv.innerHTML = `Your Score: ${score} / ${total}`;
+  }
+</script>
+
+</body>
+</html>

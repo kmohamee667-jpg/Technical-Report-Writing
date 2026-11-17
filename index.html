@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0f172a">
+  <title>Technical Report Writing - تدريب الوحدات</title>
+  <style>
+    :root {
+      --bg: #eef4fb;
+      --surface: rgba(255, 255, 255, 0.92);
+      --surface-strong: #ffffff;
+      --text: #172033;
+      --muted: #64748b;
+      --primary: #2563eb;
+      --primary-strong: #1d4ed8;
+      --border: #dbe5f1;
+      --shadow: 0 14px 38px rgba(30, 64, 175, 0.12);
+    }
+
+    html[data-theme="dark"] {
+      --bg: #0b1220;
+      --surface: rgba(15, 23, 42, 0.94);
+      --surface-strong: #111827;
+      --text: #e5eefb;
+      --muted: #a7b4c8;
+      --primary: #60a5fa;
+      --primary-strong: #93c5fd;
+      --border: #26344a;
+      --shadow: 0 14px 38px rgba(0, 0, 0, 0.32);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Segoe UI", Tahoma, Arial, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top right, rgba(37, 99, 235, 0.12), transparent 30rem),
+        var(--bg);
+      transition: background-color 0.25s ease, color 0.25s ease;
+    }
+
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      padding: 12px clamp(12px, 3vw, 32px);
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(14px);
+    }
+
+    .header-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: max-content;
+      margin-inline-end: 4px;
+      font-weight: 800;
+      letter-spacing: -0.2px;
+    }
+
+    .brand-mark {
+      width: 38px;
+      height: 38px;
+      display: grid;
+      place-items: center;
+      border-radius: 11px;
+      color: #fff;
+      background: linear-gradient(135deg, var(--primary), #7c3aed);
+      box-shadow: 0 8px 18px rgba(37, 99, 235, 0.24);
+    }
+
+    .page-nav {
+      display: flex;
+      flex: 1;
+      gap: 8px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      padding: 2px;
+    }
+
+    .page-nav::-webkit-scrollbar { display: none; }
+
+    .nav-button {
+      border: 1px solid var(--border);
+      background: var(--surface-strong);
+      color: var(--text);
+      border-radius: 10px;
+      min-height: 42px;
+      padding: 9px 14px;
+      font: inherit;
+      font-size: 14px;
+      font-weight: 700;
+      white-space: nowrap;
+      cursor: pointer;
+      transition: 0.18s ease;
+    }
+
+    .nav-button:hover {
+      border-color: var(--primary);
+      transform: translateY(-1px);
+    }
+
+    .nav-button.active {
+      border-color: transparent;
+      color: #fff;
+      background: var(--primary);
+      box-shadow: 0 8px 18px rgba(37, 99, 235, 0.22);
+    }
+
+    .theme-toggle {
+      flex: 0 0 42px;
+      width: 42px;
+      height: 42px;
+      display: grid;
+      place-items: center;
+      border: 1px solid var(--border);
+      border-radius: 50%;
+      background: var(--surface-strong);
+      color: var(--text);
+      font-size: 20px;
+      cursor: pointer;
+      transition: 0.18s ease;
+    }
+
+    .theme-toggle:hover { border-color: var(--primary); transform: rotate(8deg); }
+
+    main {
+      width: 100%;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: clamp(8px, 2vw, 18px) clamp(8px, 2vw, 18px) 24px;
+    }
+
+    .viewer {
+      width: 100%;
+      height: calc(100vh - 92px);
+      min-height: 540px;
+      border: 0;
+      display: block;
+      border-radius: 16px;
+      background: #f8fafc;
+      box-shadow: var(--shadow);
+    }
+
+    html[data-theme="dark"] .viewer { background: #0f172a; }
+
+    @media (max-width: 720px) {
+      .site-header { padding: 8px 10px; }
+      .header-inner { align-items: flex-start; gap: 8px; }
+      .brand { min-width: 42px; }
+      .brand-text { display: none; }
+      .brand-mark { width: 42px; height: 42px; }
+      .page-nav { order: 2; }
+      .nav-button { min-height: 42px; padding: 8px 11px; font-size: 13px; }
+      .theme-toggle { position: absolute; left: 10px; top: 8px; }
+      .header-inner { padding-inline-start: 50px; }
+      main { padding: 8px 6px 12px; }
+      .viewer { height: calc(100vh - 74px); min-height: 480px; border-radius: 10px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      
+
+      <nav class="page-nav" aria-label="صفحات الموقع">
+        <button class="nav-button" data-key="mcq" data-file="TF_Unit1_L1&amp;2.html">True & False</button>
+        <button class="nav-button" data-key="tf" data-file="MCQ_L1&amp;2.html">MCQ</button>
+        <button class="nav-button" data-key="quiz" data-file="Unit1&amp;2_Quiz (1).html">Quiz Unit 1&2</button>
+      </nav>
+
+      <button class="theme-toggle" id="themeToggle" type="button" aria-label="تفعيل الوضع الداكن" title="تغيير الوضع">🌙</button>
+    </div>
+  </header>
+
+  <main>
+    <iframe id="contentFrame" class="viewer" title="محتوى التدريب" loading="eager"></iframe>
+  </main>
+
+  <script>
+    const pages = {
+      mcq: "TF_Unit1_L1&2.html",
+      tf: "MCQ_L1&2.html",
+      quiz: "Unit1&2_Quiz (1).html"
+    };
+
+    const frame = document.getElementById("contentFrame");
+    const navButtons = [...document.querySelectorAll(".nav-button")];
+    const themeToggle = document.getElementById("themeToggle");
+
+    function applyTheme(theme) {
+      document.documentElement.dataset.theme = theme;
+      localStorage.setItem("technical-writing-theme", theme);
+      themeToggle.textContent = theme === "dark" ? "☀️" : "🌙";
+      themeToggle.setAttribute("aria-label", theme === "dark" ? "تفعيل الوضع الفاتح" : "تفعيل الوضع الداكن");
+      themeToggle.title = theme === "dark" ? "الوضع الفاتح" : "الوضع الداكن";
+
+      try {
+        const doc = frame.contentDocument;
+        if (!doc) return;
+        let style = doc.getElementById("parent-dark-style");
+        if (!style) {
+          style = doc.createElement("style");
+          style.id = "parent-dark-style";
+          doc.head.appendChild(style);
+        }
+        style.textContent = `
+          @media (max-width: 720px) {
+            body { padding: 8px !important; }
+            .container { width: 100% !important; max-width: none !important; padding: 16px 12px !important; border-radius: 10px !important; }
+            h1 { font-size: 1.35rem !important; }
+            h2 { font-size: 1.2rem !important; }
+            .subtitle { font-size: 0.9rem !important; }
+            .question-card { padding: 12px !important; }
+            .question-title, .question-text { font-size: 0.95rem !important; }
+            .options { flex-direction: column !important; gap: 7px !important; }
+            .options li { margin-bottom: 0 !important; }
+            .options label, .option { padding: 9px 10px !important; }
+            .actions { flex-direction: column !important; }
+            .actions .btn { width: 100% !important; }
+            .score-card { gap: 8px !important; }
+            .score-item { min-width: 90px !important; width: 100% !important; }
+          }
+        ` + (theme === "dark" ? `
+          html, body { background: #0f172a !important; color: #e5eefb !important; }
+          .container, .question-box, .result-box, .wrong-review-box, .setupScreen,
+          #setupScreen, #quizScreen, #resultScreen, #wrongReviewScreen {
+            background: #111827 !important; color: #e5eefb !important; box-shadow: 0 8px 28px rgba(0,0,0,.35) !important;
+          }
+          h1, h2, .question-title, .question-text, label, .progress, .score-details,
+          .subtitle, .score-item, .wrong-card .q-text { color: #e5eefb !important; }
+          .subtitle, .progress { color: #a7b4c8 !important; }
+          .question-card, .option, .options label, .score-item, .wrong-card,
+          .question-text { background: #1a2434 !important; border-color: #334155 !important; }
+          .options label:hover, .option:hover { background: #22304a !important; }
+          .option.selected { background: #1e3a5f !important; }
+          .option.correct { background: #17382a !important; }
+          .option.wrong { background: #47252a !important; }
+          select, input[type="number"] { background: #0f172a !important; color: #e5eefb !important; border-color: #334155 !important; }
+          .answer-box { background: #3b1f24 !important; color: #fecaca !important; }
+        ` : "");
+      } catch (_) {}
+    }
+
+    function showPage(key, updateHistory = true) {
+      if (!pages[key]) key = "mcq";
+      navButtons.forEach(button => {
+        const active = button.dataset.key === key;
+        button.classList.toggle("active", active);
+        button.setAttribute("aria-current", active ? "page" : "false");
+      });
+      frame.src = pages[key];
+      if (updateHistory) history.replaceState(null, "", `#${key}`);
+      document.title = `${navButtons.find(button => button.dataset.key === key).textContent} - Technical Report Writing`;
+    }
+
+    navButtons.forEach(button => {
+      button.addEventListener("click", () => showPage(button.dataset.key));
+    });
+
+    frame.addEventListener("load", () => applyTheme(document.documentElement.dataset.theme || "light"));
+
+    themeToggle.addEventListener("click", () => {
+      const next = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
+      applyTheme(next);
+    });
+
+    const savedTheme = localStorage.getItem("technical-writing-theme");
+    const preferredTheme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+    applyTheme(savedTheme || preferredTheme);
+
+    const keyFromHash = location.hash.slice(1);
+    showPage(pages[keyFromHash] ? keyFromHash : "mcq", true);
+
+    window.addEventListener("hashchange", () => {
+      const key = location.hash.slice(1);
+      showPage(pages[key] ? key : "mcq", false);
+    });
+  </script>
+</body>
+</html>

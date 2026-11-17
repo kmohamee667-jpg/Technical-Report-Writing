@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>منصة التدريب - Unit 1 & 2</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background-color: #f0f4f8; margin: 0; padding: 20px; }
+        .container { max-width: 800px; margin: 0 auto; background: #fff; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        h2 { color: #2c3e50; text-align: center; margin-bottom: 25px; }
+        
+        .form-group { margin-bottom: 15px; }
+        label { display: block; font-weight: bold; margin-bottom: 5px; color: #34495e; }
+        select, input[type="number"] { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 15px; box-sizing: border-box; }
+        .btn { width: 100%; padding: 14px; border: none; border-radius: 6px; font-size: 16px; cursor: pointer; font-weight: bold; margin-top: 15px; transition: 0.3s; }
+        .btn-start { background: #27ae60; color: #fff; }
+        .btn-start:hover { background: #219150; }
+        
+        .question-box { display: none; }
+        .progress { text-align: center; color: #7f8c8d; margin-bottom: 10px; font-weight: bold; }
+        .question-text { font-size: 18px; font-weight: bold; color: #2c3e50; margin-bottom: 20px; line-height: 1.6; background: #f8f9fa; padding: 15px; border-radius: 8px; border-right: 4px solid #3498db; }
+        .options { display: flex; flex-direction: column; gap: 10px; }
+        .option { padding: 12px 15px; border: 2px solid #e0e0e0; border-radius: 8px; cursor: pointer; transition: 0.2s; background: #fafafa; font-size: 16px; }
+        .option:hover { border-color: #3498db; }
+        .option.selected { border-color: #3498db; background: #ebf5fb; }
+        .option.correct { border-color: #27ae60; background: #eafaf1; }
+        .option.wrong { border-color: #e74c3c; background: #fdedec; }
+        .option.disabled { pointer-events: none; }
+        
+        .actions { display: flex; gap: 8px; margin-top: 20px; flex-wrap: wrap; }
+        .actions .btn { flex: 1; min-width: 100px; margin-top: 0; padding: 12px 8px; font-size: 14px; }
+        .btn-prev { background: #95a5a6; color: #fff; }
+        .btn-prev:hover { background: #7f8c8d; }
+        .btn-reveal { background: #f39c12; color: #fff; }
+        .btn-reveal:hover { background: #d68910; }
+        .btn-next { background: #27ae60; color: #fff; }
+        .btn-next:hover { background: #219150; }
+        .feedback { margin-top: 15px; font-weight: bold; text-align: center; display: none; font-size: 16px; padding: 10px; border-radius: 8px; }
+
+        .result-box { display: none; text-align: center; }
+        .score { font-size: 56px; font-weight: bold; color: #27ae60; margin: 20px 0; }
+        .score-details { font-size: 18px; color: #34495e; margin-bottom: 20px; line-height: 1.8; }
+        .score-card { display: flex; justify-content: center; gap: 20px; margin: 20px 0; flex-wrap: wrap; }
+        .score-item { background: #f8f9fa; padding: 15px 25px; border-radius: 10px; min-width: 120px; border-right: 4px solid #3498db; }
+        .score-item.correct-score { border-right-color: #27ae60; }
+        .score-item.wrong-score { border-right-color: #e74c3c; }
+        .score-item .num { font-size: 28px; font-weight: bold; display: block; }
+        .btn-restart { background: #e67e22; color: #fff; }
+        .btn-restart:hover { background: #d35400; }
+        .btn-wrong { background: #e74c3c; color: #fff; }
+        .btn-wrong:hover { background: #c0392b; }
+
+        .wrong-review-box { display: none; }
+        .wrong-review-box h2 { color: #e74c3c; }
+        .wrong-card { background: #fdf2f2; border-right: 5px solid #e74c3c; padding: 15px; margin-bottom: 20px; border-radius: 8px; text-align: right; }
+        .wrong-card .q-text { font-weight: bold; margin-bottom: 10px; font-size: 16px; color: #2c3e50; }
+        .wrong-card .your-ans { color: #e74c3c; margin-bottom: 5px; }
+        .wrong-card .correct-ans { color: #27ae60; font-weight: bold; }
+        .back-btn { background: #3498db; color: #fff; margin-top: 10px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <div id="setupScreen">
+        <h2> تدريب على الوحدتين الاولى والثانية</h2>
+	    <h2> في حال وجود إجابة غير دقيقة يرجى مراجعة الشرح  </h2>
+
+        <div class="form-group">
+            <label>عدد الأسئلة:</label>
+            <input type="number" id="numQuestions" min="1" value="10">
+        </div>
+        <div class="form-group">
+            <label>الوحدة (Unit):</label>
+            <select id="filterUnit" onchange="updateFiles()"><option value="">الكل</option></select>
+        </div>
+        <div class="form-group">
+            <label>الملف / الدرس (File Name):</label>
+            <select id="filterFile" onchange="updateTopics()"><option value="">الكل</option></select>
+        </div>
+        <div class="form-group">
+            <label>الموضوع الرئيسي (Main Topic):</label>
+            <select id="filterMain" onchange="updateSubTopics()"><option value="">الكل</option></select>
+        </div>
+        <div class="form-group">
+            <label>الموضوع الفرعي (Sub-Topic):</label>
+            <select id="filterSub"><option value="">الكل</option></select>
+        </div>
+        <div class="form-group">
+            <label>نوع السؤال (Type):</label>
+            <select id="filterType"><option value="">الكل</option></select>
+        </div>
+        <button class="btn btn-start" onclick="startQuiz()">ابدأ التدريب</button>
+    </div>
+
+    <div id="quizScreen" class="question-box">
+        <div class="progress" id="progressText"></div>
+        <div class="question-text" id="questionText"></div>
+        <div class="options" id="optionsContainer"></div>
+        <div class="feedback" id="feedbackText"></div>
+        <div class="actions">
+            <button class="btn btn-prev" id="prevBtn" onclick="prevQuestion()">السابق</button>
+            <button class="btn btn-reveal" id="revealBtn" onclick="revealAnswer()">عرض الإجابة</button>
+            <button class="btn btn-next" id="nextBtn" onclick="nextQuestion()">التالي</button>
+        </div>
+    </div>
+
+    <div id="resultScreen" class="result-box">
+        <h2>النتيجة النهائية</h2>
+        <div class="score" id="scoreText">0%</div>
+        <div class="score-card">
+            <div class="score-item correct-score">
+                <span class="num" id="correctCount">0</span>
+                إجابات صحيحة
+            </div>
+            <div class="score-item wrong-score">
+                <span class="num" id="wrongCount">0</span>
+                إجابات خاطئة
+            </div>
+            <div class="score-item">
+                <span class="num" id="totalCount">0</span>
+                إجمالي الأسئلة المجابة
+            </div>
+        </div>
+        <div class="score-details" id="scoreDetails"></div>
+        <button class="btn btn-wrong" id="viewWrongBtn" onclick="viewWrongAnswers()">عرض الأسئلة الخطأ</button>
+        <button class="btn btn-restart" onclick="location.reload()">تدريب جديد</button>
+    </div>
+
+    <div id="wrongReviewScreen" class="wrong-review-box">
+        <h2>الأسئلة التي أخطأت فيها</h2>
+        <div id="wrongContainer"></div>
+        <button class="btn back-btn" onclick="backToResult()">رجوع للنتيجة</button>
+    </div>
+
+</div>
+
+<script>
+    // =========================================================
+    // [1] بيانات الأسئلة
+    // =========================================================
+    const allQuestions = [
+        { unit: "Unit 1", file: "Unit1_L1&2.pptx", main: "أساسيات وعملية الاتصال (Fundamentals of Communication & Process)", sub: "خطوات عملية الاتصال وعناصرها (Communication Steps & Fundamentals)", type: "True / False", question: "Sensing a need is the very first step in the communication process.", A: "True", B: "False", C: "", D: "", ans: "1" },
+        { unit: "Unit 1", file: "Unit1_L1&2.pptx", main: "أساسيات وعملية الاتصال (Fundamentals of Communication & Process)", sub: "خطوات عملية الاتصال وعناصرها (Communication Steps & Fundamentals)", type: "True / False", question: "Interpreting the message is an activity done by the sender.", A: "True", B: "False", C: "", D: "", ans: "2" },
+        { unit: "Unit 1", file: "Unit1_L1&2.pptx", main: "أساسيات وعملية الاتصال (Fundamentals of Communication & Process)", sub: "أسباب ودواعي الكتابة (Reasons for Writing)", type: "True / False", question: "Writing helps you think by finding logical faults in your own understanding.", A: "True", B: "False", C: "", D: "", ans: "1" },
+        { unit: "Unit 1", file: "Unit1_L1&2.pptx", main: "أساسيات وعملية الاتصال (Fundamentals of Communication & Process)", sub: "أسباب ودواعي الكتابة (Reasons for Writing)", type: "True / False", question: "Applying for a job is considered one of the \"Intellectual reasons\" for writing.", A: "True", B: "False", C: "", D: "", ans: "2" },
+        { unit: "Unit 1", file: "Unit1_L1&2.pptx", main: "أنواع الاتصالات والرسائل التجارية (Organizational Communication & Messages)", sub: "أنواع الاتصالات المؤسسية (Organizational Communication)", type: "True / False", question: "Personal communication only occurs outside the workplace.", A: "True", B: "False", C: "", D: "", ans: "2" },
+        { unit: "Unit 1", file: "Unit1_L1&2.pptx", main: "أساسيات وعملية الاتصال (Fundamentals of Communication & Process)", sub: "أسباب ودواعي الكتابة (Reasons for Writing)", type: "True / False", question: "A positive business message can be used to commend an employee for a well-done job.", A: "True", B: "False", C: "", D: "", ans: "1" },
+        { unit: "Unit 1", file: "Unit1_L1&2.pptx", main: "أساسيات وعملية الاتصال (Fundamentals of Communication & Process)", sub: "خطوات عملية الاتصال وعناصرها (Communication Steps & Fundamentals)", type: "MCQ", question: "What is the final step (Step 10) in the communication process?", A: "Sending the message", B: "Interpreting the message", C: "Replying to the message", D: "Deciding on a response", ans: "3" },
+        { unit: "Unit 1", file: "Unit1_L1&2.pptx", main: "أساسيات وعملية الاتصال (Fundamentals of Communication & Process)", sub: "أسباب ودواعي الكتابة (Reasons for Writing)", type: "MCQ", question: "Which of the following is considered an \"Intellectual reason\" for writing?", A: "Applying for a Job", B: "Create Large Amounts of Information", C: "Business Communication", D: "Web Writing", ans: "2" },
+        { unit: "Unit 1", file: "Unit1_L1&2.pptx", main: "أنواع الاتصالات والرسائل التجارية (Organizational Communication & Messages)", sub: "أنواع الاتصالات المؤسسية (Organizational Communication)", type: "MCQ", question: "When we consider the communication activities of an organization from an overall point of view, the activities fall into three broad categories:", A: "electronic, face-to-face, and internal", B: "external operational, external, and personal", C: "internal operational, external operational, and personal", D: "operational, face-to-face, and personal", ans: "3" },
+        { unit: "Unit 1", file: "Unit1_L1&2.pptx", main: "أنواع الاتصالات والرسائل التجارية (Organizational Communication & Messages)", sub: "أنواع الاتصالات المؤسسية (Organizational Communication)", type: "MCQ", question: "Internal operational communication includes all the following EXCEPT:", A: "Orders given by supervisors", B: "Email messages written by workers", C: "Advertising made to customers", D: "Setting organization's goals", ans: "3" },
+        { unit: "Unit 1", file: "Unit1_L1&2.pptx", main: "أنواع الاتصالات والرسائل التجارية (Organizational Communication & Messages)", sub: "أنواع الاتصالات المؤسسية (Organizational Communication)", type: "MCQ", question: "External communication can involve communicating with all below except:", A: "Suppliers", B: "service companies", C: "customers", D: "Colleagues", ans: "4" },
+        { unit: "Unit 1", file: "Unit1_L1&2.pptx", main: "أنواع الاتصالات والرسائل التجارية (Organizational Communication & Messages)", sub: "أنواع الرسائل التجارية (Types of Business Messages)", type: "MCQ", question: "There are many types of business message which are:", A: "Verbal business message.", B: "Written business message.", C: "Persuasive business message.", D: "All of the above.", ans: "4" },
+        { unit: "Unit 1", file: "Unit1_L1&2.pptx", main: "أساسيات وعملية الاتصال (Fundamentals of Communication & Process)", sub: "خطوات عملية الاتصال وعناصرها (Communication Steps & Fundamentals)", type: "MCQ", question: "In which step of the communication process do you make preliminary choices about the message content, structure, type, visual format, and the channel?", A: "Sensing a need", B: "Interpreting the message", C: "Selecting a course of action", D: "Receiving the message", ans: "3" },
+        { unit: "Unit 1", file: "Unit1_L1&2.pptx", main: "أساسيات وعملية الاتصال (Fundamentals of Communication & Process)", sub: "أسباب ودواعي الكتابة (Reasons for Writing)", type: "MCQ", question: "Which practical reason for writing involves filling out different forms and applications?", A: "Applying for a Job", B: "Education and Scientific Papers", C: "Government", D: "Web Writing", ans: "3" },
+        { unit: "Unit 1", file: "Unit1_L1&2.pptx", main: "أنواع الاتصالات والرسائل التجارية (Organizational Communication & Messages)", sub: "أنواع الرسائل التجارية (Types of Business Messages)", type: "MCQ", question: "Which type of business message is considered the primary mode of passing a message to carry out routine business activities?", A: "Written Business Message", B: "Verbal Business Message", C: "Negative Business Message", D: "Persuasive Business Message", ans: "2" },
+        { unit: "Unit 1", file: "Unit1_L1&2.pptx", main: "أساسيات وعملية الاتصال (Fundamentals of Communication & Process)", sub: "خطوات عملية الاتصال وعناصرها (Communication Steps & Fundamentals)", type: "MCQ", question: "What does \"Interpreting the message\" (Step 8) involve from the recipient's side?", A: "Composing a presentation", B: "Delivering the message through chosen channels", C: "Extracting information, guessing the purpose, and making judgments", D: "Writing a CV", ans: "3" },
+        { unit: "Unit 1", file: "Unit1_L1&2.pptx", main: "أنواع الاتصالات والرسائل التجارية (Organizational Communication & Messages)", sub: "أنواع الرسائل التجارية (Types of Business Messages)", type: "True / False", question: "If the reader's expected reaction to your message is positive or neutral, the best approach is to be indirect.", A: "True", B: "False", C: "", D: "", ans: "2" },
+        { unit: "Unit 1", file: "Unit1_L1&2.pptx", main: "أنواع الاتصالات والرسائل التجارية (Organizational Communication & Messages)", sub: "أنواع الرسائل التجارية (Types of Business Messages)", type: "MCQ", question: "According to the guidelines for writing business messages, what should you do if the reader's reaction is expected to be positive or neutral?", A: "Delay the explanation until the end.", B: "Get to the objective right away without using conditioning words.", C: "Use a lot of commercial language.", D: "Avoid stating the purpose clearly.", ans: "2" },
+        { unit: "Unit 1", file: "Unit1_L3-5.pptx", main: "مبادئ الكتابة التجارية الـ 7 (The 7 Cs of Business Writing)", sub: "مبادئ الكتابة التجارية الـ 7 (The 7 Cs)", type: "True / False", question: "Effective communication is about transmitting your message to other people clearly and obviously.", A: "True", B: "False", C: "", D: "", ans: "1" },
+        { unit: "Unit 1", file: "Unit1_L3-5.pptx", main: "أسلوب وصياغة الكتابة (Writing Style & Tone)", sub: "صياغة ونبرة الرسالة (Style & Tone)", type: "True / False", question: "Because of technology advancement, the importance of writing is decreasing nowadays.", A: "True", B: "False", C: "", D: "", ans: "2" },
+        { unit: "Unit 1", file: "Unit1_L3-5.pptx", main: "أسلوب وصياغة الكتابة (Writing Style & Tone)", sub: "صياغة ونبرة الرسالة (Style & Tone)", type: "True / False", question: "Different situations may require different communication strategies.", A: "True", B: "False", C: "", D: "", ans: "1" },
+        { unit: "Unit 1", file: "Unit1_L3-5.pptx", main: "قواعد وإرشادات الكتابة الجيدة (Better Writing Guidelines)", sub: "إرشادات تطوير مهارة الكتابة (Better Writing Guidelines)", type: "True / False", question: "Writing skills are not essential because we can learn and read scientific research papers online.", A: "True", B: "False", C: "", D: "", ans: "2" },
+        { unit: "Unit 1", file: "Unit1_L3-5.pptx", main: "أسلوب وصياغة الكتابة (Writing Style & Tone)", sub: "صياغة ونبرة الرسالة (Style & Tone)", type: "True / False", question: "Considering possible communication strategies means you need to be well informed about the situation.", A: "True", B: "False", C: "", D: "", ans: "2" },
+        { unit: "Unit 1", file: "Unit1_L3-5.pptx", main: "أسلوب وصياغة الكتابة (Writing Style & Tone)", sub: "صياغة ونبرة الرسالة (Style & Tone)", type: "True / False", question: "Making notes or writing the whole presentation for an oral delivery is part of the \"Composing the message\" step.", A: "True", B: "False", C: "", D: "", ans: "1" },
+        { unit: "Unit 1", file: "Unit1_L3-5.pptx", main: "أسلوب وصياغة الكتابة (Writing Style & Tone)", sub: "صياغة ونبرة الرسالة (Style & Tone)", type: "True / False", question: "Web writing is always the best way of obtaining information because it contains no mistakes.", A: "True", B: "False", C: "", D: "", ans: "2" },
+        { unit: "Unit 1", file: "Unit1_L3-5.pptx", main: "أسلوب وصياغة الكتابة (Writing Style & Tone)", sub: "صياغة ونبرة الرسالة (Style & Tone)", type: "True / False", question: "A business message is necessary to fulfill a degree of formality in transmission to achieve its goal.", A: "True", B: "False", C: "", D: "", ans: "1" },
+        { unit: "Unit 1", file: "Unit1_L3-5.pptx", main: "أسلوب وصياغة الكتابة (Writing Style & Tone)", sub: "صياغة ونبرة الرسالة (Style & Tone)", type: "True / False", question: "Written Business Message is mostly used when the information being passed on needs to be filed and compiled.", A: "True", B: "False", C: "", D: "", ans: "1" },
+        { unit: "Unit 1", file: "Unit1_L3-5.pptx", main: "أسلوب وصياغة الكتابة (Writing Style & Tone)", sub: "صياغة ونبرة الرسالة (Style & Tone)", type: "MCQ", question: "Which type of business message is used to convey details about an upcoming event, like a monthly staff meeting date?", A: "Routine Business Message", B: "Negative Business Message", C: "Persuasive Business Message", D: "Positive Business Message", ans: "1" },
+        { unit: "Unit 1", file: "Unit1_L3-5.pptx", main: "أسلوب وصياغة الكتابة (Writing Style & Tone)", sub: "صياغة ونبرة الرسالة (Style & Tone)", type: "MCQ", question: "The business message could not be:", A: "Verbal.", B: "Conceptual.", C: "Positive.", D: "Persuasive.", ans: "2" },
+        { unit: "Unit 1", file: "Unit1_L3-5.pptx", main: "أسلوب وصياغة الكتابة (Writing Style & Tone)", sub: "صياغة ونبرة الرسالة (Style & Tone)", type: "MCQ", question: "What might be the result of poor writing skills when presenting a written proposal for a business opportunity?", A: "Immediate acceptance", B: "Giving the wrong message and possible rejection", C: "A positive impact on the recruiting authority", D: "Creating large amounts of information", ans: "2" },
+        { unit: "Unit 1", file: "Unit1_L3-5.pptx", main: "مراحل عملية الكتابة (The Writing Process)", sub: "مرحلة التخطيط (Planning)", type: "True / False", question: "The writing process consists of three independent and separate stages: Planning, Drafting, and Revising.", A: "True", B: "False", C: "", D: "", ans: "2" },
+        { unit: "Unit 1", file: "Unit1_L3-5.pptx", main: "مراحل عملية الكتابة (The Writing Process)", sub: "مرحلة التخطيط (Planning)", type: "True / False", question: "A common mistake writers make is spending too much time on drafting and too little time on planning and revising.", A: "True", B: "False", C: "", D: "", ans: "1" },
+        { unit: "Unit 1", file: "Unit1_L3-5.pptx", main: "مراحل عملية الكتابة (The Writing Process)", sub: "مرحلة التخطيط (Planning)", type: "True / False", question: "When planning, you should use your memory, creativity, and imagination to gather information.", A: "True", B: "False", C: "", D: "", ans: "1" },
+        { unit: "Unit 1", file: "Unit1_L3-5.pptx", main: "مراحل عملية الكتابة (The Writing Process)", sub: "مرحلة التخطيط (Planning)", type: "True / False", question: "Gathering information requires doing some research to decide what must be done.", A: "True", B: "False", C: "", D: "", ans: "1" },
+        { unit: "Unit 1", file: "Unit1_L3-5.pptx", main: "مراحل عملية الكتابة (The Writing Process)", sub: "مرحلة التخطيط (Planning)", type: "True / False", question: "Visualizing the readers and keeping their interests in mind is considered an excellent planning technique.", A: "True", B: "False", C: "", D: "", ans: "1" },
+        { unit: "Unit 1", file: "Unit1_L3-5.pptx", main: "مراحل عملية الكتابة (The Writing Process)", sub: "مرحلة التخطيط (Planning)", type: "True / False", question: "If an idea is numerical during the \"Analyzing Information\" phase, you should avoid doing calculations.", A: "True", B: "False", C: "", D: "", ans: "2" },
+        { unit: "Unit 1", file: "Unit1_L3-5.pptx", main: "مراحل عملية الكتابة (The Writing Process)", sub: "مرحلة التخطيط (Planning)", type: "True / False", question: "Decisions about a document's visual design (like headings and bullets) can only be made at the very end of the writing process.", A: "True", B: "False", C: "", D: "", ans: "2" },
+        { unit: "Unit 1", file: "Unit1_L3-5.pptx", main: "مراحل عملية الكتابة (The Writing Process)", sub: "مرحلة المسودة (Drafting)", type: "True / False", question: "Flexibility is the best advice when it comes to the drafting stage.", A: "True", B: "False", C: "", D: "", ans: "1" },
+        { unit: "Unit 1", file: "Unit1_L3-5.pptx", main: "أسلوب وصياغة الكتابة (Writing Style & Tone)", sub: "صياغة ونبرة الرسالة (Style & Tone)", type: "True / False", question: "When writing a difficult task, it is better to concentrate on certain things at a time rather than everything at once.", A: "True", B: "False", C: "", D: "", ans: "1" },
+        { unit: "Unit 1", file: "Unit1_L3-5.pptx", main: "أسلوب وصياغة الكتابة (Writing Style & Tone)", sub: "صياغة ونبرة الرسالة (Style & Tone)", type: "True / False", question: "Trying to make your first draft perfect is highly recommended to save time during revision.", A: "True", B: "False", C: "", D: "", ans: "2" },
+        { unit: "Unit 1", file: "Unit1_L3-5.pptx", main: "مراحل عملية الكتابة (The Writing Process)", sub: "مرحلة المسودة (Drafting)", type: "True / False", question: "During drafting, if you get stuck on grammar, you should stop and fix it immediately.", A: "True", B: "False", C: "", D: "", ans: "2" },
+        { unit: "Unit 1", file: "Unit1_L3-5.pptx", main: "مراحل عملية الكتابة (The Writing Process)", sub: "مرحلة المسودة (Drafting)", type: "True / False", question: "One productive drafting strategy is starting with the most interesting part for you.", A: "True", B: "False", C: "", D: "", ans: "1" },
+        { unit: "Unit 1", file: "Unit1_L3-5.pptx", main: "مراحل عملية الكتابة (The Writing Process)", sub: "مرحلة المسودة (Drafting)", type: "True / False", question: "Turning into your own critic is an important attitude during the drafting stage.", A: "True", B: "False", C: "", D: "", ans: "2" },
+        { unit: "Unit 1", file: "Unit1_L3-5.pptx", main: "مراحل عملية الكتابة (The Writing Process)", sub: "مرحلة المراجعة والتنقيح (Revising & Editing)", type: "True / False", question: "Editing focuses on top-level concerns like overall organization, while Revision focuses on style and word choice.", A: "True", B: "False", C: "", D: "", ans: "2" },
+        { unit: "Unit 1", file: "Unit1_L3-5.pptx", main: "مراحل عملية الكتابة (The Writing Process)", sub: "مرحلة المراجعة والتنقيح (Revising & Editing)", type: "True / False", question: "Proofreading involves checking particular mechanical and grammatical elements like spelling and punctuation.", A: "True", B: "False", C: "", D: "", ans: "1" },
+        { unit: "Unit 1", file: "Unit1_L3-5.pptx", main: "مراحل عملية الكتابة (The Writing Process)", sub: "مرحلة المراجعة والتنقيح (Revising & Editing)", type: "True / False", question: "Getting feedback from colleagues is an important part of the revising process to catch errors and weaknesses.", A: "True", B: "False", C: "", D: "", ans: "1" },
+        { unit: "Unit 1", file: "Unit1_L3-5.pptx", main: "قواعد وإرشادات الكتابة الجيدة (Better Writing Guidelines)", sub: "إرشادات تطوير مهارة الكتابة (Better Writing Guidelines)", type: "True / False", question: "If your reader is not familiar with your company, you should open with a brief orienting phrase.", A: "True", B: "False", C: "", D: "", ans: "1" },
+        { unit: "Unit 1", file: "Unit1_L3-5.pptx", main: "أسلوب وصياغة الكتابة (Writing Style & Tone)", sub: "صياغة ونبرة الرسالة (Style & Tone)", type: "True / False", question: "A prompt reply will be appreciated is an example of a wordy expression that should be avoided.", A: "True", B: "False", C: "", D: "", ans: "2" },
+        { unit: "Unit 1", file: "Unit1_L3-5.pptx", main: "أسلوب وصياغة الكتابة (Writing Style & Tone)", sub: "صياغة ونبرة الرسالة (Style & Tone)", type: "True / False", question: "Ending with Goodwill means using friendly words at the end of your message, such as \"Thank you in advance for your response.\"", A: "True", B: "False", C: "", D: "", ans: "1" },
+        { unit: "Unit 1", file: "Unit1_L3-5.pptx", main: "قواعد وإرشادات الكتابة الجيدة (Better Writing Guidelines)", sub: "إرشادات تطوير مهارة الكتابة (Better Writing Guidelines)", type: "True / False", question: "Reading the work of others is not necessary to become a better writer as long as you practice writing daily.", A: "True", B: "False", C: "", D: "", ans: "2" },
+        { unit: "Unit 1", file: "Unit1_L3-5.pptx", main: "قواعد وإرشادات الكتابة الجيدة (Better Writing Guidelines)", sub: "إرشادات تطوير مهارة الكتابة (Better Writing Guidelines)", type: "True / False", question: "Your eighth or ninth letter to an angry client will be more difficult to write than the first one.", A: "True", B: "False", C: "", D: "", ans: "2" },
+        { unit: "Unit 1", file: "Unit1_L3-5.pptx", main: "قواعد وإرشادات الكتابة الجيدة (Better Writing Guidelines)", sub: "إرشادات تطوير مهارة الكتابة (Better Writing Guidelines)", type: "True / False", question: "You should leave the reader to guess between the lines to make your message more interesting.", A: "True", B: "False", C: "", D: "", ans: "2" },
+        { unit: "Unit 1", file: "Unit1_L3-5.pptx", main: "أسلوب وصياغة الكتابة (Writing Style & Tone)", sub: "صياغة ونبرة الرسالة (Style & Tone)", type: "True / False", question: "Writing naturally and sincerely means expressing thoughts in your own words.", A: "True", B: "False", C: "", D: "", ans: "1" },
+        { unit: "Unit 1", file: "Unit1_L3-5.pptx", main: "أسلوب وصياغة الكتابة (Writing Style & Tone)", sub: "صياغة ونبرة الرسالة (Style & Tone)", type: "True / False", question: "To avoid monotony in writing, you should always use sentences of the same length and structure.", A: "True", B: "False", C: "", D: "", ans: "2" },
+        { unit: "Unit 1", file: "Unit1_L3-5.pptx", main: "أسلوب وصياغة الكتابة (Writing Style & Tone)", sub: "صياغة ونبرة الرسالة (Style & Tone)", type: "True / False", question: "Paying special attention to the opening and closing paragraphs is crucial because first and last impressions leave a special mark.", A: "True", B: "False", C: "", D: "", ans: "1" },
+        { unit: "Unit 1", file: "Unit1_L3-5.pptx", main: "مبادئ الكتابة التجارية الـ 7 (The 7 Cs of Business Writing)", sub: "مبادئ الكتابة التجارية الـ 7 (The 7 Cs)", type: "True / False", question: "Being clear means checking the accuracy of facts, figures, and using proper punctuation.", A: "True", B: "False", C: "", D: "", ans: "1" },
+        { unit: "Unit 1", file: "Unit1_L3-5.pptx", main: "أسلوب وصياغة الكتابة (Writing Style & Tone)", sub: "صياغة ونبرة الرسالة (Style & Tone)", type: "True / False", question: "Business executives usually have plenty of time, so long messages are highly appreciated.", A: "True", B: "False", C: "", D: "", ans: "2" },
+        { unit: "Unit 1", file: "Unit1_L3-5.pptx", main: "مبادئ الكتابة التجارية الـ 7 (The 7 Cs of Business Writing)", sub: "مبادئ الكتابة التجارية الـ 7 (The 7 Cs)", type: "True / False", question: "Conciseness makes the message more understandable and comprehensible.", A: "True", B: "False", C: "", D: "", ans: "1" },
+        { unit: "Unit 1", file: "Unit1_L3-5.pptx", main: "مبادئ الكتابة التجارية الـ 7 (The 7 Cs of Business Writing)", sub: "مبادئ الكتابة التجارية الـ 7 (The 7 Cs)", type: "True / False", question: "Being considerate in business writing means focusing on \"I\" and \"we\" instead of \"you\".", A: "True", B: "False", C: "", D: "", ans: "2" },
+        { unit: "Unit 1", file: "Unit1_L3-5.pptx", main: "مبادئ الكتابة التجارية الـ 7 (The 7 Cs of Business Writing)", sub: "مبادئ الكتابة التجارية الـ 7 (The 7 Cs)", type: "True / False", question: "Being concise means conveying the information as quickly and easily as possible without wordy expressions.", A: "True", B: "False", C: "", D: "", ans: "1" },
+        { unit: "Unit 1", file: "Unit1_L3-5.pptx", main: "مبادئ الكتابة التجارية الـ 7 (The 7 Cs of Business Writing)", sub: "مبادئ الكتابة التجارية الـ 7 (The 7 Cs)", type: "True / False", question: "Courteous messages are less important in business writing than in face-to-face communication.", A: "True", B: "False", C: "", D: "", ans: "2" },
+        { unit: "Unit 1", file: "Unit1_L3-5.pptx", main: "مبادئ الكتابة التجارية الـ 7 (The 7 Cs of Business Writing)", sub: "مبادئ الكتابة التجارية الـ 7 (The 7 Cs)", type: "True / False", question: "Courteous messages strengthen relations and help in building goodwill.", A: "True", B: "False", C: "", D: "", ans: "1" },
+        { unit: "Unit 1", file: "Unit1_L3-5.pptx", main: "مراحل عملية الكتابة (The Writing Process)", sub: "مرحلة التخطيط (Planning)", type: "MCQ", question: "Which of the following is NOT one of the general activities of the Planning stage?", A: "Gathering Information", B: "Analyzing Information", C: "Proofreading the document", D: "Choosing a Form, Channel, and Format", ans: "3" },
+        { unit: "Unit 1", file: "Unit1_L3-5.pptx", main: "أسلوب وصياغة الكتابة (Writing Style & Tone)", sub: "صياغة ونبرة الرسالة (Style & Tone)", type: "MCQ", question: "If you want to promote your company's products through email campaigns or magazine advertisements, this decision falls under:", A: "Gathering information", B: "Analyzing information", C: "Choosing a Form, Channel and Format", D: "Proofreading", ans: "3" },
+        { unit: "Unit 1", file: "Unit1_L3-5.pptx", main: "أسلوب وصياغة الكتابة (Writing Style & Tone)", sub: "صياغة ونبرة الرسالة (Style & Tone)", type: "MCQ", question: "You choose a pattern of organization before you begin a letter. What part of the writing process does this activity represent?", A: "Planning", B: "Gathering", C: "Revising", D: "Editing", ans: "1" },
+        { unit: "Unit 1", file: "Unit1_L3-5.pptx", main: "مراحل عملية الكتابة (The Writing Process)", sub: "مرحلة المسودة (Drafting)", type: "MCQ", question: "Which of the following is true about \"Perfectionism\" during the drafting stage?", A: "It speeds up the writing process.", B: "It helps you remember the important pieces of later parts.", C: "It consumes too much energy early on and keeps you from wanting to revise later.", D: "It is the most highly recommended strategy.", ans: "3" },
+        { unit: "Unit 1", file: "Unit1_L3-5.pptx", main: "مراحل عملية الكتابة (The Writing Process)", sub: "مرحلة المسودة (Drafting)", type: "MCQ", question: "Which drafting strategy helps you stay productive?", A: "Trying to make your first draft perfect", B: "Starting to write in your most productive period of the day", C: "Focusing heavily on spelling and punctuation", D: "Taking no breaks until the document is finished", ans: "2" },
+        { unit: "Unit 1", file: "Unit1_L3-5.pptx", main: "مراحل عملية الكتابة (The Writing Process)", sub: "مرحلة المسودة (Drafting)", type: "MCQ", question: "When drafting a document, what should you do if you encounter a minor problem with wording or grammar?", A: "Stop and fix it immediately to make the draft perfect.", B: "Keep going and make each statement just good enough to move ahead.", C: "Delete the paragraph and start over.", D: "Ask a colleague for feedback before continuing.", ans: "2" },
+        { unit: "Unit 1", file: "Unit1_L3-5.pptx", main: "مراحل عملية الكتابة (The Writing Process)", sub: "مرحلة المسودة (Drafting)", type: "MCQ", question: "According to the revising strategies, when you turn into your own critic, you should:", A: "Challenge what you have written and look for better alternatives", B: "Accept the first draft as the final version", C: "Only look for spelling errors", D: "Ignore the document's structure", ans: "1" },
+        { unit: "Unit 1", file: "Unit1_L3-5.pptx", main: "مراحل عملية الكتابة (The Writing Process)", sub: "مرحلة المراجعة والتنقيح (Revising & Editing)", type: "MCQ", question: "Which level of revising focuses on checking if all necessary information is included and organized logically?", A: "Editing", B: "Proofreading", C: "Revision", D: "Drafting", ans: "3" },
+        { unit: "Unit 1", file: "Unit1_L3-5.pptx", main: "مراحل عملية الكتابة (The Writing Process)", sub: "مرحلة المراجعة والتنقيح (Revising & Editing)", type: "MCQ", question: "Which of the following is an example of an activity done during the \"Editing\" level?", A: "Checking for spelling mistakes.", B: "Calculating numerical data.", C: "Examining sentences to see if word choices serve your purpose.", D: "Deciding whether to use an email or a printed letter.", ans: "3" },
+        { unit: "Unit 1", file: "Unit1_L3-5.pptx", main: "قواعد وإرشادات الكتابة الجيدة (Better Writing Guidelines)", sub: "إرشادات تطوير مهارة الكتابة (Better Writing Guidelines)", type: "MCQ", question: "If you are writing to a reader to ask for information, how should you begin your message?", A: "By complaining about a past issue", B: "By delaying the objective", C: "By asking for the information right away", D: "By using commercial language", ans: "3" },
+        { unit: "Unit 1", file: "Unit1_L3-5.pptx", main: "قواعد وإرشادات الكتابة الجيدة (Better Writing Guidelines)", sub: "إرشادات تطوير مهارة الكتابة (Better Writing Guidelines)", type: "MCQ", question: "Which of the following is NOT one of the four main guidelines to be a better writer?", A: "You must READ", B: "You must WRITE", C: "You should WANT to WRITE", D: "You should avoid FEEDBACK", ans: "4" },
+        { unit: "Unit 1", file: "Unit1_L3-5.pptx", main: "قواعد وإرشادات الكتابة الجيدة (Better Writing Guidelines)", sub: "إرشادات تطوير مهارة الكتابة (Better Writing Guidelines)", type: "MCQ", question: "The statement \"turn off the language cop and start writing\" relates to which guideline for being a better writer?", A: "You must READ", B: "You must WRITE", C: "You should WANT to WRITE", D: "You need FEEDBACK", ans: "3" },
+        { unit: "Unit 1", file: "Unit1_L3-5.pptx", main: "مراحل عملية الكتابة (The Writing Process)", sub: "مرحلة المراجعة والتنقيح (Revising & Editing)", type: "MCQ", question: "What is the primary purpose of getting feedback from others?", A: "To prove that your writing is flawless", B: "To correct errors and find better solutions", C: "To waste time before publishing", D: "To avoid the revision stage entirely", ans: "2" },
+        { unit: "Unit 1", file: "Unit1_L3-5.pptx", main: "مبادئ الكتابة التجارية الـ 7 (The 7 Cs of Business Writing)", sub: "مبادئ الكتابة التجارية الـ 7 (The 7 Cs)", type: "MCQ", question: "Using no more words than are needed to make your meaning clear is the definition of:", A: "Avoiding monotony", B: "Avoiding wordiness", C: "Adopting the right tone", D: "Writing naturally", ans: "2" },
+        { unit: "Unit 1", file: "Unit1_L3-5.pptx", main: "أسلوب وصياغة الكتابة (Writing Style & Tone)", sub: "صياغة ونبرة الرسالة (Style & Tone)", type: "MCQ", question: "Avoiding old and approximate phrases with meaningless forms of expression refers to which rule of good writing?", A: "Avoid wordiness", B: "Avoid commercial language", C: "Avoid monotony", D: "Write naturally and sincerely", ans: "2" },
+        { unit: "Unit 1", file: "Unit1_L3-5.pptx", main: "أسلوب وصياغة الكتابة (Writing Style & Tone)", sub: "صياغة ونبرة الرسالة (Style & Tone)", type: "MCQ", question: "Which rule of good writing suggests mixing loose sentences with periodic ones, and short sentences with long ones?", A: "Avoid monotony", B: "Write sincerely", C: "Avoid commercial language", D: "Study the readers interest", ans: "1" },
+        { unit: "Unit 1", file: "Unit1_L3-5.pptx", main: "أسلوب وصياغة الكتابة (Writing Style & Tone)", sub: "صياغة ونبرة الرسالة (Style & Tone)", type: "MCQ", question: "If you want to convey information to busy executives quickly without wasting their time, which of the following basics should you strictly follow?", A: "Be concise", B: "Be considerate", C: "Be complete", D: "Be courteous", ans: "1" },
+        { unit: "Unit 1", file: "Unit1_L3-5.pptx", main: "أسلوب وصياغة الكتابة (Writing Style & Tone)", sub: "صياغة ونبرة الرسالة (Style & Tone)", type: "MCQ", question: "Why is a wordy message considered a failure in business writing?", A: "Because it shows too much consideration", B: "Because it involves more time to type and read", C: "Because it lacks courtesy", D: "Because it uses too many diagrams", ans: "2" },
+        { unit: "Unit 1", file: "Unit1_L3-5.pptx", main: "أسلوب وصياغة الكتابة (Writing Style & Tone)", sub: "صياغة ونبرة الرسالة (Style & Tone)", type: "MCQ", question: "Answering all questions asked and giving something extra when desired is part of which basic writing principle?", A: "Be concise", B: "Be complete", C: "Be considerate", D: "Be clear", ans: "2" },
+        { unit: "Unit 1", file: "Unit1_L3-5.pptx", main: "أسلوب وصياغة الكتابة (Writing Style & Tone)", sub: "صياغة ونبرة الرسالة (Style & Tone)", type: "MCQ", question: "Which basic of an effective business message requires checking the accuracy of facts, figures, grammar, and spelling?", A: "Be concise", B: "Be complete", C: "Be courteous", D: "Be correct", ans: "4" },
+        { unit: "Unit 1", file: "Unit1_L3-5.pptx", main: "قواعد وإرشادات الكتابة الجيدة (Better Writing Guidelines)", sub: "إرشادات تطوير مهارة الكتابة (Better Writing Guidelines)", type: "MCQ", question: "Focusing on 'you' instead of 'I' and 'we', and showing the reader your benefit or interest in them is the definition of:", A: "Being concise", B: "Being courteous", C: "Being considerate", D: "Being complete", ans: "3" },
+        { unit: "Unit 1", file: "Unit1_L3-5.pptx", main: "أسلوب وصياغة الكتابة (Writing Style & Tone)", sub: "صياغة ونبرة الرسالة (Style & Tone)", type: "MCQ", question: "Showing consideration for your correspondent, using polite phrases, and adopting the right tone refers to:", A: "Being courteous", B: "Being complete", C: "Being clear", D: "Being concise", ans: "1" },
+        { unit: "Unit 1", file: "Unit1_L3-5.pptx", main: "أسلوب وصياغة الكتابة (Writing Style & Tone)", sub: "صياغة ونبرة الرسالة (Style & Tone)", type: "MCQ", question: "Which of the following is not something that enhances writing skills?", A: "You should consider other's feedback.", B: "You should want to write.", C: "You should encourage others to write.", D: "You should read.", ans: "3" },
+        { unit: "Unit 1", file: "Unit1_L3-5.pptx", main: "أسلوب وصياغة الكتابة (Writing Style & Tone)", sub: "صياغة ونبرة الرسالة (Style & Tone)", type: "MCQ", question: "Which one of the following is not one of the fundamentals of business writing?", A: "Avoid the wordiness.", B: "Avoid commercial language.", C: "Avoid precision.", D: "All of the above.", ans: "3" },
+        { unit: "Unit 2", file: "Unit2_L1&2.pptx", main: "ملاءمة الكتابة للقارئ واختيار الكلمات (Reader Adaptation & Word Choice)", sub: "تكييف الرسالة للقارئ وتيسير الكلمات (Reader Adaptation & Vocabulary)", type: "True / False", question: "Understandable writing begins with adapting your message to your exact readers.", A: "True", B: "False", C: "", D: "", ans: "1" },
+        { unit: "Unit 2", file: "Unit2_L1&2.pptx", main: "ملاءمة الكتابة للقارئ واختيار الكلمات (Reader Adaptation & Word Choice)", sub: "تكييف الرسالة للقارئ وتيسير الكلمات (Reader Adaptation & Vocabulary)", type: "True / False", question: "All readers have the exact same kind of vocabulary, values, and knowledge.", A: "True", B: "False", C: "", D: "", ans: "2" },
+        { unit: "Unit 2", file: "Unit2_L1&2.pptx", main: "ملاءمة الكتابة للقارئ واختيار الكلمات (Reader Adaptation & Word Choice)", sub: "تكييف الرسالة للقارئ وتيسير الكلمات (Reader Adaptation & Vocabulary)", type: "True / False", question: "In many situations, adapting to your reader means writing on a simpler level than the one you normally use.", A: "True", B: "False", C: "", D: "", ans: "1" },
+        { unit: "Unit 2", file: "Unit2_L1&2.pptx", main: "ملاءمة الكتابة للقارئ واختيار الكلمات (Reader Adaptation & Word Choice)", sub: "تكييف الرسالة للقارئ وتيسير الكلمات (Reader Adaptation & Vocabulary)", type: "True / False", question: "If you need to target several different readers, you should write at the highest educational level so you don't seem uneducated.", A: "True", B: "False", C: "", D: "", ans: "2" },
+        { unit: "Unit 2", file: "Unit2_L1&2.pptx", main: "ملاءمة الكتابة للقارئ واختيار الكلمات (Reader Adaptation & Word Choice)", sub: "تكييف الرسالة للقارئ وتيسير الكلمات (Reader Adaptation & Vocabulary)", type: "True / False", question: "One of the reasons to use simple writing is that the writer generally knows the subject better than the reader.", A: "True", B: "False", C: "", D: "", ans: "1" },
+        { unit: "Unit 2", file: "Unit2_L1&2.pptx", main: "ملاءمة الكتابة للقارئ واختيار الكلمات (Reader Adaptation & Word Choice)", sub: "تكييف الرسالة للقارئ وتيسير الكلمات (Reader Adaptation & Vocabulary)", type: "True / False", question: "Slang and popular clichés are understandable only for the moment and might be out of use tomorrow.", A: "True", B: "False", C: "", D: "", ans: "1" },
+        { unit: "Unit 2", file: "Unit2_L1&2.pptx", main: "ملاءمة الكتابة للقارئ واختيار الكلمات (Reader Adaptation & Word Choice)", sub: "تكييف الرسالة للقارئ وتيسير الكلمات (Reader Adaptation & Vocabulary)", type: "True / False", question: "A cliché is an expression that has been worn out through constant use, such as \"Work like a dog\".", A: "True", B: "False", C: "", D: "", ans: "1" },
+        { unit: "Unit 2", file: "Unit2_L1&2.pptx", main: "ملاءمة الكتابة للقارئ واختيار الكلمات (Reader Adaptation & Word Choice)", sub: "تكييف الرسالة للقارئ وتيسير الكلمات (Reader Adaptation & Vocabulary)", type: "True / False", question: "Acronyms are shorter forms of words or phrases used to save time and keep the document concise.", A: "True", B: "False", C: "", D: "", ans: "1" },
+        { unit: "Unit 2", file: "Unit2_L1&2.pptx", main: "ملاءمة الكتابة للقارئ واختيار الكلمات (Reader Adaptation & Word Choice)", sub: "تكييف الرسالة للقارئ وتيسير الكلمات (Reader Adaptation & Vocabulary)", type: "True / False", question: "Technical words should be used freely with people outside your specific field to impress them.", A: "True", B: "False", C: "", D: "", ans: "2" },
+        { unit: "Unit 2", file: "Unit2_L1&2.pptx", main: "ملاءمة الكتابة للقارئ واختيار الكلمات (Reader Adaptation & Word Choice)", sub: "تكييف الرسالة للقارئ وتيسير الكلمات (Reader Adaptation & Vocabulary)", type: "True / False", question: "Concrete words stand for things the reader can feel, see, taste, or smell.", A: "True", B: "False", C: "", D: "", ans: "1" },
+        { unit: "Unit 2", file: "Unit2_L1&2.pptx", main: "ملاءمة الكتابة للقارئ واختيار الكلمات (Reader Adaptation & Word Choice)", sub: "خصائص الألفاظ وأنواعها (Word Characteristics)", type: "True / False", question: "Abstract words are specific, while concrete words are general and vague.", A: "True", B: "False", C: "", D: "", ans: "2" },
+        { unit: "Unit 2", file: "Unit2_L1&2.pptx", main: "ملاءمة الكتابة للقارئ واختيار الكلمات (Reader Adaptation & Word Choice)", sub: "خصائص الألفاظ وأنواعها (Word Characteristics)", type: "True / False", question: "Significant loss and \"In the near future\" are examples of concrete words.", A: "True", B: "False", C: "", D: "", ans: "2" },
+        { unit: "Unit 2", file: "Unit2_L1&2.pptx", main: "ملاءمة الكتابة للقارئ واختيار الكلمات (Reader Adaptation & Word Choice)", sub: "خصائص الألفاظ وأنواعها (Word Characteristics)", type: "True / False", question: "Camouflaged verbs are verbs that are needlessly changed to nouns.", A: "True", B: "False", C: "", D: "", ans: "1" },
+        { unit: "Unit 2", file: "Unit2_L1&2.pptx", main: "ملاءمة الكتابة للقارئ واختيار الكلمات (Reader Adaptation & Word Choice)", sub: "خصائص الألفاظ وأنواعها (Word Characteristics)", type: "True / False", question: "Make an application is a clear verb form, while \"Apply\" is a camouflaged verb.", A: "True", B: "False", C: "", D: "", ans: "2" },
+        { unit: "Unit 2", file: "Unit2_L1&2.pptx", main: "ملاءمة الكتابة للقارئ واختيار الكلمات (Reader Adaptation & Word Choice)", sub: "تكييف الرسالة للقارئ وتيسير الكلمات (Reader Adaptation & Vocabulary)", type: "True / False", question: "Using strong or power words makes your writing more forceful and grabs the interest of the reader.", A: "True", B: "False", C: "", D: "", ans: "1" },
+        { unit: "Unit 2", file: "Unit2_L1&2.pptx", main: "ملاءمة الكتابة للقارئ واختيار الكلمات (Reader Adaptation & Word Choice)", sub: "خصائص الألفاظ وأنواعها (Word Characteristics)", type: "True / False", question: "The correct idiom to use is \"different than\" instead of \"different from\".", A: "True", B: "False", C: "", D: "", ans: "2" },
+        { unit: "Unit 2", file: "Unit2_L1&2.pptx", main: "ملاءمة الكتابة للقارئ واختيار الكلمات (Reader Adaptation & Word Choice)", sub: "خصائص الألفاظ وأنواعها (Word Characteristics)", type: "True / False", question: "Discriminatory words are words that refer negatively to groups of people according to gender, nationality, age, or disability.", A: "True", B: "False", C: "", D: "", ans: "1" },
+        { unit: "Unit 2", file: "Unit2_L1&2.pptx", main: "ملاءمة الكتابة للقارئ واختيار الكلمات (Reader Adaptation & Word Choice)", sub: "خصائص الألفاظ وأنواعها (Word Characteristics)", type: "True / False", question: "Manpower and \"Policeman\" are considered discriminatory words that should be replaced with \"workers\" and \"police officer\".", A: "True", B: "False", C: "", D: "", ans: "1" },
+        { unit: "Unit 2", file: "Unit2_L1&2.pptx", main: "ملاءمة الكتابة للقارئ واختيار الكلمات (Reader Adaptation & Word Choice)", sub: "تكييف الرسالة للقارئ وتيسير الكلمات (Reader Adaptation & Vocabulary)", type: "True / False", question: "Studying the reader requires using simple sentence structure to reach people with lower communication skills.", A: "True", B: "False", C: "", D: "", ans: "1" },
+        { unit: "Unit 2", file: "Unit2_L1&2.pptx", main: "صياغة الجمل والفقرات (Sentence Construction & Paragraph Design)", sub: "صياغة الجمل والفقرات (Sentence & Paragraph Design)", type: "True / False", question: "Using more words in a sentence decreases the risk of misunderstanding.", A: "True", B: "False", C: "", D: "", ans: "2" },
+        { unit: "Unit 2", file: "Unit2_L1&2.pptx", main: "ملاءمة الكتابة للقارئ واختيار الكلمات (Reader Adaptation & Word Choice)", sub: "تكييف الرسالة للقارئ وتيسير الكلمات (Reader Adaptation & Vocabulary)", type: "True / False", question: "You should use all short sentences and completely avoid long sentences to keep the reader interested.", A: "True", B: "False", C: "", D: "", ans: "2" },
+        { unit: "Unit 2", file: "Unit2_L1&2.pptx", main: "ملاءمة الكتابة للقارئ واختيار الكلمات (Reader Adaptation & Word Choice)", sub: "تكييف الرسالة للقارئ وتيسير الكلمات (Reader Adaptation & Vocabulary)", type: "True / False", question: "For the middle-level adult reader, short readable sentences should average about 16 to 18 words per sentence.", A: "True", B: "False", C: "", D: "", ans: "1" },
+        { unit: "Unit 2", file: "Unit2_L1&2.pptx", main: "صياغة الجمل والفقرات (Sentence Construction & Paragraph Design)", sub: "صياغة الجمل والفقرات (Sentence & Paragraph Design)", type: "True / False", question: "Limiting sentence content means joining as many thoughts as possible into one single sentence.", A: "True", B: "False", C: "", D: "", ans: "2" },
+        { unit: "Unit 2", file: "Unit2_L1&2.pptx", main: "صياغة الجمل والفقرات (Sentence Construction & Paragraph Design)", sub: "صياغة الجمل والفقرات (Sentence & Paragraph Design)", type: "True / False", question: "A \"cluttering phrase\" is a phrase that can be replaced by shorter wording without loss of meaning.", A: "True", B: "False", C: "", D: "", ans: "1" },
+        { unit: "Unit 2", file: "Unit2_L1&2.pptx", main: "صياغة الجمل والفقرات (Sentence Construction & Paragraph Design)", sub: "صياغة الجمل والفقرات (Sentence & Paragraph Design)", type: "True / False", question: "In the event that is a cluttering phrase that can be simply replaced by \"If\".", A: "True", B: "False", C: "", D: "", ans: "1" },
+        { unit: "Unit 2", file: "Unit2_L1&2.pptx", main: "صياغة الجمل والفقرات (Sentence Construction & Paragraph Design)", sub: "صياغة الجمل والفقرات (Sentence & Paragraph Design)", type: "True / False", question: "Surplus words add essential meaning to the sentence and cannot be removed.", A: "True", B: "False", C: "", D: "", ans: "2" },
+        { unit: "Unit 2", file: "Unit2_L1&2.pptx", main: "صياغة الجمل والفقرات (Sentence Construction & Paragraph Design)", sub: "صياغة الجمل والفقرات (Sentence & Paragraph Design)", type: "True / False", question: "Assemble together and \"Return back\" are examples of unnecessary repetition of words (redundancies).", A: "True", B: "False", C: "", D: "", ans: "1" },
+        { unit: "Unit 2", file: "Unit2_L1&2.pptx", main: "صياغة الجمل والفقرات (Sentence Construction & Paragraph Design)", sub: "صياغة الجمل والفقرات (Sentence & Paragraph Design)", type: "True / False", question: "Short and simple sentences give LESS emphasis to their contents than longer sentences.", A: "True", B: "False", C: "", D: "", ans: "2" },
+        { unit: "Unit 2", file: "Unit2_L1&2.pptx", main: "صياغة الجمل والفقرات (Sentence Construction & Paragraph Design)", sub: "صياغة الجمل والفقرات (Sentence & Paragraph Design)", type: "True / False", question: "Destruction of unity in a sentence falls into two kinds: excessive detail and unrelated ideas.", A: "True", B: "False", C: "", D: "", ans: "1" },
+        { unit: "Unit 2", file: "Unit2_L1&2.pptx", main: "صياغة الجمل والفقرات (Sentence Construction & Paragraph Design)", sub: "صياغة الجمل والفقرات (Sentence & Paragraph Design)", type: "True / False", question: "People prefer to read writing with frequent paragraph breaks rather than heavy blocks of text.", A: "True", B: "False", C: "", D: "", ans: "1" },
+        { unit: "Unit 2", file: "Unit2_L1&2.pptx", main: "صياغة الجمل والفقرات (Sentence Construction & Paragraph Design)", sub: "صياغة الجمل والفقرات (Sentence & Paragraph Design)", type: "True / False", question: "The topic sentence must always be placed at the very beginning of the paragraph.", A: "True", B: "False", C: "", D: "", ans: "2" },
+        { unit: "Unit 2", file: "Unit2_L1&2.pptx", main: "ملاءمة الكتابة للقارئ واختيار الكلمات (Reader Adaptation & Word Choice)", sub: "تكييف الرسالة للقارئ وتيسير الكلمات (Reader Adaptation & Vocabulary)", type: "MCQ", question: "In choosing the words for a message to multiple readers, you should:", A: "Select words that impress the reader.", B: "Select words all your readers clearly understand.", C: "Write to the person with the highest level of understanding.", D: "Use a lot of technical acronyms.", ans: "2" },
+        { unit: "Unit 2", file: "Unit2_L1&2.pptx", main: "ملاءمة الكتابة للقارئ واختيار الكلمات (Reader Adaptation & Word Choice)", sub: "تكييف الرسالة للقارئ وتيسير الكلمات (Reader Adaptation & Vocabulary)", type: "MCQ", question: "Using simple writing is essential because:", A: "The writer usually knows less than the reader.", B: "We tend to write in a friendly way naturally.", C: "The writer generally knows the subject better than the reader.", D: "Simple writing makes the text look longer.", ans: "3" },
+        { unit: "Unit 2", file: "Unit2_L1&2.pptx", main: "ملاءمة الكتابة للقارئ واختيار الكلمات (Reader Adaptation & Word Choice)", sub: "تكييف الرسالة للقارئ وتيسير الكلمات (Reader Adaptation & Vocabulary)", type: "MCQ", question: "Which of the following words should be used instead of the difficult word \"Demonstrate\"?", A: "Try", B: "End", C: "Show", D: "Initiate", ans: "3" },
+        { unit: "Unit 2", file: "Unit2_L1&2.pptx", main: "ملاءمة الكتابة للقارئ واختيار الكلمات (Reader Adaptation & Word Choice)", sub: "تكييف الرسالة للقارئ وتيسير الكلمات (Reader Adaptation & Vocabulary)", type: "MCQ", question: "Technical words:", A: "Are proper if all the readers understand them.", B: "Should be used to impress the reader.", C: "Should be used heavily with people outside the field.", D: "Are exactly the same as slang.", ans: "1" },
+        { unit: "Unit 2", file: "Unit2_L1&2.pptx", main: "ملاءمة الكتابة للقارئ واختيار الكلمات (Reader Adaptation & Word Choice)", sub: "خصائص الألفاظ وأنواعها (Word Characteristics)", type: "MCQ", question: "Which of the following is an example of a CONCRETE phrase?", A: "Significant loss", B: "In the near future", C: "Big amount of money", D: "65% loss", ans: "4" },
+        { unit: "Unit 2", file: "Unit2_L1&2.pptx", main: "ملاءمة الكتابة للقارئ واختيار الكلمات (Reader Adaptation & Word Choice)", sub: "خصائص الألفاظ وأنواعها (Word Characteristics)", type: "MCQ", question: "Which of the following is a clear verb form instead of a Camouflaged Verb?", A: "Make an application", B: "Have a discussion", C: "Give assistance to", D: "Cancel", ans: "4" },
+        { unit: "Unit 2", file: "Unit2_L1&2.pptx", main: "ملاءمة الكتابة للقارئ واختيار الكلمات (Reader Adaptation & Word Choice)", sub: "خصائص الألفاظ وأنواعها (Word Characteristics)", type: "MCQ", question: "Which of the following is the correct idiomatic expression?", A: "Different than", B: "Listen at", C: "In search of", D: "Equally as bad", ans: "3" },
+        { unit: "Unit 2", file: "Unit2_L1&2.pptx", main: "ملاءمة الكتابة للقارئ واختيار الكلمات (Reader Adaptation & Word Choice)", sub: "خصائص الألفاظ وأنواعها (Word Characteristics)", type: "MCQ", question: "To avoid gender-discriminatory words, which of the following should you use instead of \"Man made\"?", A: "Manufactured", B: "Personnel", C: "Police officer", D: "Workers", ans: "1" },
+        { unit: "Unit 2", file: "Unit2_L1&2.pptx", main: "صياغة الجمل والفقرات (Sentence Construction & Paragraph Design)", sub: "صياغة الجمل والفقرات (Sentence & Paragraph Design)", type: "MCQ", question: "Which of the following statements is most accurate with respect to sentence length?", A: "Short sentences generally communicate more effectively than long sentences.", B: "Longer sentences are preferred because they are more impressive.", C: "Longer sentences emphasize more information.", D: "Long sentences should never be used.", ans: "1" },
+        { unit: "Unit 2", file: "Unit2_L1&2.pptx", main: "ملاءمة الكتابة للقارئ واختيار الكلمات (Reader Adaptation & Word Choice)", sub: "تكييف الرسالة للقارئ وتيسير الكلمات (Reader Adaptation & Vocabulary)", type: "MCQ", question: "For the middle-level adult reader, sentences should average about:", A: "5 to 8 words per sentence", B: "16 to 18 words per sentence", C: "25 to 30 words per sentence", D: "40 to 50 words per sentence", ans: "2" },
+        { unit: "Unit 2", file: "Unit2_L1&2.pptx", main: "صياغة الجمل والفقرات (Sentence Construction & Paragraph Design)", sub: "صياغة الجمل والفقرات (Sentence & Paragraph Design)", type: "MCQ", question: "Words that add absolutely nothing to the sentence meaning are called:", A: "Concrete words", B: "Transitional words", C: "Surplus words", D: "Strong words", ans: "3" },
+        { unit: "Unit 2", file: "Unit2_L1&2.pptx", main: "ملاءمة الكتابة للقارئ واختيار الكلمات (Reader Adaptation & Word Choice)", sub: "خصائص الألفاظ وأنواعها (Word Characteristics)", type: "MCQ", question: "To give a particular message stronger emphasis without the interference of supporting information, you should use:", A: "Very long sentences", B: "Complex paragraphs", C: "Short and simple sentences", D: "Abstract words", ans: "3" },
+        { unit: "Unit 2", file: "Unit2_L1&2.pptx", main: "صياغة الجمل والفقرات (Sentence Construction & Paragraph Design)", sub: "صياغة الجمل والفقرات (Sentence & Paragraph Design)", type: "MCQ", question: "Putting unrelated ideas in a single sentence is the most destructive thing to:", A: "Sentence length", B: "Sentence unity", C: "Paragraph length", D: "Abstract meanings", ans: "2" },
+        { unit: "Unit 2", file: "Unit2_L1&2.pptx", main: "صياغة الجمل والفقرات (Sentence Construction & Paragraph Design)", sub: "صياغة الجمل والفقرات (Sentence & Paragraph Design)", type: "MCQ", question: "Research suggests that the average length for a paragraph in reports should be around:", A: "Two lines", B: "Eight lines", C: "Twenty lines", D: "Fifty lines", ans: "2" },
+        { unit: "Unit 2", file: "Unit2_L1&2.pptx", main: "صياغة الجمل والفقرات (Sentence Construction & Paragraph Design)", sub: "صياغة الجمل والفقرات (Sentence & Paragraph Design)", type: "MCQ", question: "Which sentence supplies a headline for the paragraph and states its main idea?", A: "Transitional sentence", B: "Supporting sentence", C: "Topic sentence", D: "Concluding sentence", ans: "3" },
+        { unit: "Unit 2", file: "Unit2_L1&2.pptx", main: "صياغة الجمل والفقرات (Sentence Construction & Paragraph Design)", sub: "صياغة الجمل والفقرات (Sentence & Paragraph Design)", type: "MCQ", question: "Which of the following is a method used to create coherent paragraphs?", A: "Repeating key words", B: "Use of pronouns (this, that, those)", C: "Transitional words (therefore, however)", D: "All of the above", ans: "4" },
+        { unit: "Unit 2", file: "Unit2_L1&2.pptx", main: "صياغة الجمل والفقرات (Sentence Construction & Paragraph Design)", sub: "صياغة الجمل والفقرات (Sentence & Paragraph Design)", type: "True / False", question: "Writing in the active voice means building sentences where the subject \"acts\".", A: "True", B: "False", C: "", D: "", ans: "1" },
+        { unit: "Unit 2", file: "Unit2_L1&2.pptx", main: "صياغة الجمل والفقرات (Sentence Construction & Paragraph Design)", sub: "صياغة الجمل والفقرات (Sentence & Paragraph Design)", type: "True / False", question: "Sentences in the active voice are generally more wordy than those in the passive voice.", A: "True", B: "False", C: "", D: "", ans: "2" },
+        { unit: "Unit 2", file: "Unit2_L1&2.pptx", main: "صياغة الجمل والفقرات (Sentence Construction & Paragraph Design)", sub: "صياغة الجمل والفقرات (Sentence & Paragraph Design)", type: "True / False", question: "Writing in the passive voice means constructing sentences where the subject is acted upon.", A: "True", B: "False", C: "", D: "", ans: "1" },
+        { unit: "Unit 2", file: "Unit2_L1&2.pptx", main: "صياغة الجمل والفقرات (Sentence Construction & Paragraph Design)", sub: "صياغة الجمل والفقرات (Sentence & Paragraph Design)", type: "True / False", question: "Over 120 cars were hit in the accident is an example of a sentence in the active voice.", A: "True", B: "False", C: "", D: "", ans: "2" },
+        { unit: "Unit 2", file: "Unit2_L1&2.pptx", main: "ملاءمة الكتابة للقارئ واختيار الكلمات (Reader Adaptation & Word Choice)", sub: "تكييف الرسالة للقارئ وتيسير الكلمات (Reader Adaptation & Vocabulary)", type: "True / False", question: "If the readers do not need to know who is responsible for the action, the active voice is strictly recommended.", A: "True", B: "False", C: "", D: "", ans: "2" },
+        { unit: "Unit 2", file: "Unit2_L1&2.pptx", main: "صياغة الجمل والفقرات (Sentence Construction & Paragraph Design)", sub: "صياغة الجمل والفقرات (Sentence & Paragraph Design)", type: "True / False", question: "The bad news should ideally be placed in the very first paragraph of your message.", A: "True", B: "False", C: "", D: "", ans: "2" },
+        { unit: "Unit 2", file: "Unit2_L1&2.pptx", main: "ملاءمة الكتابة للقارئ واختيار الكلمات (Reader Adaptation & Word Choice)", sub: "تكييف الرسالة للقارئ وتيسير الكلمات (Reader Adaptation & Vocabulary)", type: "True / False", question: "Breaking up your bad news into portions helps prevent annoying the reader early on.", A: "True", B: "False", C: "", D: "", ans: "1" },
+        { unit: "Unit 2", file: "Unit2_L1&2.pptx", main: "ملاءمة الكتابة للقارئ واختيار الكلمات (Reader Adaptation & Word Choice)", sub: "تكييف الرسالة للقارئ وتيسير الكلمات (Reader Adaptation & Vocabulary)", type: "True / False", question: "Presenting background information helps the reader understand the nature of the bad news to respond correctly.", A: "True", B: "False", C: "", D: "", ans: "1" },
+        { unit: "Unit 2", file: "Unit2_L1&2.pptx", main: "ملاءمة الكتابة للقارئ واختيار الكلمات (Reader Adaptation & Word Choice)", sub: "تكييف الرسالة للقارئ وتيسير الكلمات (Reader Adaptation & Vocabulary)", type: "True / False", question: "You should heavily use negative words like \"can't\", \"terrible\", and \"mistake\" to ensure the reader understands the severity.", A: "True", B: "False", C: "", D: "", ans: "2" },
+        { unit: "Unit 2", file: "Unit2_L1&2.pptx", main: "ملاءمة الكتابة للقارئ واختيار الكلمات (Reader Adaptation & Word Choice)", sub: "تكييف الرسالة للقارئ وتيسير الكلمات (Reader Adaptation & Vocabulary)", type: "True / False", question: "A buffer is a helpful statement that allows you to postpone the negative message and put the reader in a good mood.", A: "True", B: "False", C: "", D: "", ans: "1" },
+        { unit: "Unit 2", file: "Unit2_L1&2.pptx", main: "صياغة الجمل والفقرات (Sentence Construction & Paragraph Design)", sub: "صياغة الجمل والفقرات (Sentence & Paragraph Design)", type: "True / False", question: "You should place the refusal in a completely separate paragraph to highlight it and make it perfectly clear.", A: "True", B: "False", C: "", D: "", ans: "2" },
+        { unit: "Unit 2", file: "Unit2_L1&2.pptx", main: "ملاءمة الكتابة للقارئ واختيار الكلمات (Reader Adaptation & Word Choice)", sub: "تكييف الرسالة للقارئ وتيسير الكلمات (Reader Adaptation & Vocabulary)", type: "True / False", question: "Suggesting an alternative in a bad-news message allows the reader to reestablish their psychological freedom.", A: "True", B: "False", C: "", D: "", ans: "1" },
+        { unit: "Unit 2", file: "Unit2_L1&2.pptx", main: "ملاءمة الكتابة للقارئ واختيار الكلمات (Reader Adaptation & Word Choice)", sub: "تكييف الرسالة للقارئ وتيسير الكلمات (Reader Adaptation & Vocabulary)", type: "True / False", question: "It is highly recommended to start every paragraph with words like \"The truth\" or \"The reality\" to keep the reader focused.", A: "True", B: "False", C: "", D: "", ans: "2" },
+        { unit: "Unit 2", file: "Unit2_L1&2.pptx", main: "صياغة الجمل والفقرات (Sentence Construction & Paragraph Design)", sub: "صياغة الجمل والفقرات (Sentence & Paragraph Design)", type: "True / False", question: "The semicolon (;) is used between long sentences, especially when one is the reason for the occurrence of the other.", A: "True", B: "False", C: "", D: "", ans: "1" },
+        { unit: "Unit 2", file: "Unit2_L1&2.pptx", main: "صياغة الجمل والفقرات (Sentence Construction & Paragraph Design)", sub: "صياغة الجمل والفقرات (Sentence & Paragraph Design)", type: "True / False", question: "The colon (:) is placed at the end of a complete sentence to indicate a full stop and complete meaning.", A: "True", B: "False", C: "", D: "", ans: "2" },
+        { unit: "Unit 2", file: "Unit2_L1&2.pptx", main: "صياغة الجمل والفقرات (Sentence Construction & Paragraph Design)", sub: "صياغة الجمل والفقرات (Sentence & Paragraph Design)", type: "True / False", question: "Parentheses ( ) are placed around interruptive sentences that fall outside the main context.", A: "True", B: "False", C: "", D: "", ans: "1" },
+        { unit: "Unit 2", file: "Unit2_L1&2.pptx", main: "صياغة الجمل والفقرات (Sentence Construction & Paragraph Design)", sub: "صياغة الجمل والفقرات (Sentence & Paragraph Design)", type: "True / False", question: "A comma (,) is used to separate connected sentences to distinguish speech parts.", A: "True", B: "False", C: "", D: "", ans: "1" },
+        { unit: "Unit 2", file: "Unit2_L1&2.pptx", main: "صياغة الجمل والفقرات (Sentence Construction & Paragraph Design)", sub: "صياغة الجمل والفقرات (Sentence & Paragraph Design)", type: "MCQ", question: "Which of the following sentences is written in the active voice?", A: "The balloon was thrown by me.", B: "Too much noise is being made.", C: "Aly will eat popcorn tomorrow.", D: "The device was broken.", ans: "3" },
+        { unit: "Unit 2", file: "Unit2_L1&2.pptx", main: "صياغة الجمل والفقرات (Sentence Construction & Paragraph Design)", sub: "صياغة الجمل والفقرات (Sentence & Paragraph Design)", type: "MCQ", question: "If a bad-news message consists of 5 paragraphs, where should the bad news ideally be hidden?", A: "In the first paragraph", B: "In the middle of the third paragraph", C: "In the final paragraph", D: "In the subject line", ans: "2" },
+        { unit: "Unit 2", file: "Unit2_L1&2.pptx", main: "صياغة الجمل والفقرات (Sentence Construction & Paragraph Design)", sub: "صياغة الجمل والفقرات (Sentence & Paragraph Design)", type: "MCQ", question: "In punctuation, which mark is placed at the end of a complete sentence to indicate the completion of meaning?", A: "Semicolon (;)", B: "Colon (:)", C: "Period (.)", D: "Comma (,)", ans: "3" },
+        { unit: "Unit 2", file: "Unit2_L3-5.pptx", main: "أسلوب الكتابة الإدارية وقواعد الإملاء والترقيم (Administrative Style & Mechanics)", sub: "الأسلوب الإداري والعلمي وعلامات الترقيم (Administrative Style & Punctuation)", type: "True / False", question: "Familiar words are exactly the same for everyone regardless of their background.", A: "True", B: "False", C: "", D: "", ans: "2" },
+        { unit: "Unit 2", file: "Unit2_L3-5.pptx", main: "أسلوب الكتابة الإدارية وقواعد الإملاء والترقيم (Administrative Style & Mechanics)", sub: "الأسلوب الإداري والعلمي وعلامات الترقيم (Administrative Style & Punctuation)", type: "True / False", question: "Using familiar words means using the language that all of us use in daily conversation.", A: "True", B: "False", C: "", D: "", ans: "1" },
+        { unit: "Unit 2", file: "Unit2_L3-5.pptx", main: "أسلوب الكتابة الإدارية وقواعد الإملاء والترقيم (Administrative Style & Mechanics)", sub: "الأسلوب الإداري والعلمي وعلامات الترقيم (Administrative Style & Punctuation)", type: "True / False", question: "Endeavor and \"Terminate\" are better word choices than \"Try\" and \"End\" in business writing.", A: "True", B: "False", C: "", D: "", ans: "2" },
+        { unit: "Unit 2", file: "Unit2_L3-5.pptx", main: "أسلوب الكتابة الإدارية وقواعد الإملاء والترقيم (Administrative Style & Mechanics)", sub: "الأسلوب الإداري والعلمي وعلامات الترقيم (Administrative Style & Punctuation)", type: "True / False", question: "Slang is highly appropriate and recommended in formal business writing because it is vivid.", A: "True", B: "False", C: "", D: "", ans: "2" },
+        { unit: "Unit 2", file: "Unit2_L3-5.pptx", main: "أسلوب الكتابة الإدارية وقواعد الإملاء والترقيم (Administrative Style & Mechanics)", sub: "الأسلوب الإداري والعلمي وعلامات الترقيم (Administrative Style & Punctuation)", type: "True / False", question: "Short words always communicate better than long words because they are usually more familiar.", A: "True", B: "False", C: "", D: "", ans: "1" },
+        { unit: "Unit 2", file: "Unit2_L3-5.pptx", main: "أسلوب الكتابة الإدارية وقواعد الإملاء والترقيم (Administrative Style & Mechanics)", sub: "الأسلوب الإداري والعلمي وعلامات الترقيم (Administrative Style & Punctuation)", type: "True / False", question: "Short words are always easy to understand, and long words are always difficult.", A: "True", B: "False", C: "", D: "", ans: "2" },
+        { unit: "Unit 2", file: "Unit2_L3-5.pptx", main: "أسلوب الكتابة الإدارية وقواعد الإملاء والترقيم (Administrative Style & Mechanics)", sub: "الأسلوب الإداري والعلمي وعلامات الترقيم (Administrative Style & Punctuation)", type: "True / False", question: "Using the masculine pronoun (he, his, him) is the best way to address all customers neutrally.", A: "True", B: "False", C: "", D: "", ans: "2" },
+        { unit: "Unit 2", file: "Unit2_L3-5.pptx", main: "أسلوب الكتابة الإدارية وقواعد الإملاء والترقيم (Administrative Style & Mechanics)", sub: "الأسلوب الإداري والعلمي وعلامات الترقيم (Administrative Style & Punctuation)", type: "MCQ", question: "An expression that has been worn out through constant use, like \"It goes without saying\", is called:", A: "Slang", B: "Cliché", C: "Acronym", D: "Concrete word", ans: "2" },
+        { unit: "Unit 2", file: "Unit2_L3-5.pptx", main: "أسلوب الكتابة الإدارية وقواعد الإملاء والترقيم (Administrative Style & Mechanics)", sub: "الأسلوب الإداري والعلمي وعلامات الترقيم (Administrative Style & Punctuation)", type: "MCQ", question: "The phrase \"In the meantime\" can be replaced by the shorter substitution:", A: "Meanwhile", B: "Like", C: "For", D: "By", ans: "1" },
+        { unit: "Unit 2", file: "Unit2_L3-5.pptx", main: "أسلوب الكتابة الإدارية وقواعد الإملاء والترقيم (Administrative Style & Mechanics)", sub: "الأسلوب الإداري والعلمي وعلامات الترقيم (Administrative Style & Punctuation)", type: "MCQ", question: "The division finances could be observed to be decreasing each new year is an example of:", A: "Direct wording", B: "Unnecessary repetition", C: "Roundabout construction", D: "Concrete words", ans: "3" },
+        { unit: "Unit 2", file: "Unit2_L3-5.pptx", main: "أسلوب الكتابة الإدارية وقواعد الإملاء والترقيم (Administrative Style & Mechanics)", sub: "الأسلوب الإداري والعلمي وعلامات الترقيم (Administrative Style & Punctuation)", type: "MCQ", question: "Using phrases like \"Plan for the future\" or \"Assemble together\" is an example of:", A: "Roundabout construction", B: "Unnecessary repetition of words (Redundancies)", C: "Cluttering phrases", D: "Surplus words", ans: "2" },
+        { unit: "Unit 2", file: "Unit2_L3-5.pptx", main: "المبني للمعلوم والمبني للمجهول (Active vs Passive Voice)", sub: "المبني للمعلوم والمجهول (Active vs Passive)", type: "True / False", question: "You should use the active voice when you want your writing to be simple, direct, clear, and easy to read.", A: "True", B: "False", C: "", D: "", ans: "1" },
+        { unit: "Unit 2", file: "Unit2_L3-5.pptx", main: "المبني للمعلوم والمبني للمجهول (Active vs Passive Voice)", sub: "المبني للمعلوم والمجهول (Active vs Passive)", type: "True / False", question: "If you are not very certain about your writing, using the passive voice is an easy way to improve a boring style.", A: "True", B: "False", C: "", D: "", ans: "2" },
+        { unit: "Unit 2", file: "Unit2_L3-5.pptx", main: "المبني للمعلوم والمبني للمجهول (Active vs Passive Voice)", sub: "المبني للمعلوم والمجهول (Active vs Passive)", type: "True / False", question: "The passive voice is never the best choice in business writing and should be completely avoided.", A: "True", B: "False", C: "", D: "", ans: "2" },
+        { unit: "Unit 2", file: "Unit2_L3-5.pptx", main: "المبني للمعلوم والمبني للمجهول (Active vs Passive Voice)", sub: "المبني للمعلوم والمجهول (Active vs Passive)", type: "True / False", question: "You should use the passive voice to emphasize an object rather than the actor.", A: "True", B: "False", C: "", D: "", ans: "1" },
+        { unit: "Unit 2", file: "Unit2_L3-5.pptx", main: "رسائل الأخبار السلبية والاعتذارات (Delivering Bad-News Messages)", sub: "إستراتيجيات رسائل الأخبار السلبية (Bad-News Messages)", type: "True / False", question: "You can easily turn bad news into good news just through smart wording.", A: "True", B: "False", C: "", D: "", ans: "2" },
+        { unit: "Unit 2", file: "Unit2_L3-5.pptx", main: "رسائل الأخبار السلبية والاعتذارات (Delivering Bad-News Messages)", sub: "إستراتيجيات رسائل الأخبار السلبية (Bad-News Messages)", type: "True / False", question: "The way you deliver bad news in writing can shape how it is received, just like when speaking.", A: "True", B: "False", C: "", D: "", ans: "1" },
+        { unit: "Unit 2", file: "Unit2_L3-5.pptx", main: "رسائل الأخبار السلبية والاعتذارات (Delivering Bad-News Messages)", sub: "إستراتيجيات رسائل الأخبار السلبية (Bad-News Messages)", type: "True / False", question: "The goal of a bad-news message is to hide or minimize the fact of the bad news.", A: "True", B: "False", C: "", D: "", ans: "2" },
+        { unit: "Unit 2", file: "Unit2_L3-5.pptx", main: "رسائل الأخبار السلبية والاعتذارات (Delivering Bad-News Messages)", sub: "إستراتيجيات رسائل الأخبار السلبية (Bad-News Messages)", type: "True / False", question: "Once delivered, bad news should be followed by a remedy, lesson learned, or a course of action.", A: "True", B: "False", C: "", D: "", ans: "1" },
+        { unit: "Unit 2", file: "Unit2_L3-5.pptx", main: "أسلوب الكتابة الإدارية وقواعد الإملاء والترقيم (Administrative Style & Mechanics)", sub: "الأسلوب الإداري والعلمي وعلامات الترقيم (Administrative Style & Punctuation)", type: "True / False", question: "A promise to turn a weakness into strength must be convincing and provable.", A: "True", B: "False", C: "", D: "", ans: "1" },
+        { unit: "Unit 2", file: "Unit2_L3-5.pptx", main: "رسائل الأخبار السلبية والاعتذارات (Delivering Bad-News Messages)", sub: "إستراتيجيات رسائل الأخبار السلبية (Bad-News Messages)", type: "True / False", question: "The key to successfully delivering bad news is maintaining and earning trust.", A: "True", B: "False", C: "", D: "", ans: "1" },
+        { unit: "Unit 2", file: "Unit2_L3-5.pptx", main: "رسائل الأخبار السلبية والاعتذارات (Delivering Bad-News Messages)", sub: "إستراتيجيات رسائل الأخبار السلبية (Bad-News Messages)", type: "True / False", question: "If your delivery of bad news lacks credibility, it will make things worse, like pouring gasoline on a fire.", A: "True", B: "False", C: "", D: "", ans: "1" },
+        { unit: "Unit 2", file: "Unit2_L3-5.pptx", main: "أسلوب الكتابة الإدارية وقواعد الإملاء والترقيم (Administrative Style & Mechanics)", sub: "الأسلوب الإداري والعلمي وعلامات الترقيم (Administrative Style & Punctuation)", type: "True / False", question: "Our company has enjoyed a positive relationship for many years is an example of a neutral opening.", A: "True", B: "False", C: "", D: "", ans: "2" },
+        { unit: "Unit 2", file: "Unit2_L3-5.pptx", main: "رسائل الأخبار السلبية والاعتذارات (Delivering Bad-News Messages)", sub: "إستراتيجيات رسائل الأخبار السلبية (Bad-News Messages)", type: "True / False", question: "When closing a bad-news message, you should end on a pessimistic note to show deep empathy.", A: "True", B: "False", C: "", D: "", ans: "2" },
+        { unit: "Unit 2", file: "Unit2_L3-5.pptx", main: "أسلوب الكتابة الإدارية وقواعد الإملاء والترقيم (Administrative Style & Mechanics)", sub: "الأسلوب الإداري والعلمي وعلامات الترقيم (Administrative Style & Punctuation)", type: "True / False", question: "The phrase \"The loan application was not approved\" is considered a neutral, professional alternative to \"No, you will not get your loan.\"", A: "True", B: "False", C: "", D: "", ans: "1" },
+        { unit: "Unit 2", file: "Unit2_L3-5.pptx", main: "رسائل الأخبار السلبية والاعتذارات (Delivering Bad-News Messages)", sub: "إستراتيجيات رسائل الأخبار السلبية (Bad-News Messages)", type: "True / False", question: "A bad-news message should always state the specific negative message clearly in the subject line.", A: "True", B: "False", C: "", D: "", ans: "2" },
+        { unit: "Unit 2", file: "Unit2_L3-5.pptx", main: "رسائل الأخبار السلبية والاعتذارات (Delivering Bad-News Messages)", sub: "إستراتيجيات رسائل الأخبار السلبية (Bad-News Messages)", type: "True / False", question: "A buffer can be a statement of values such as respect for dignity and transparency.", A: "True", B: "False", C: "", D: "", ans: "1" },
+        { unit: "Unit 2", file: "Unit2_L3-5.pptx", main: "رسائل الأخبار السلبية والاعتذارات (Delivering Bad-News Messages)", sub: "إستراتيجيات رسائل الأخبار السلبية (Bad-News Messages)", type: "True / False", question: "If you don't have a good reason for a bad-news message, you should invent a weak one just to have a reason.", A: "True", B: "False", C: "", D: "", ans: "2" },
+        { unit: "Unit 2", file: "Unit2_L3-5.pptx", main: "أسلوب الكتابة الإدارية وقواعد الإملاء والترقيم (Administrative Style & Mechanics)", sub: "الأسلوب الإداري والعلمي وعلامات الترقيم (Administrative Style & Punctuation)", type: "True / False", question: "The Administrative writing style is an essay-like subject that depends on expressing thoughts with personal emotions.", A: "True", B: "False", C: "", D: "", ans: "2" },
+        { unit: "Unit 2", file: "Unit2_L3-5.pptx", main: "أسلوب الكتابة الإدارية وقواعد الإملاء والترقيم (Administrative Style & Mechanics)", sub: "الأسلوب الإداري والعلمي وعلامات الترقيم (Administrative Style & Punctuation)", type: "True / False", question: "The administrative writing style is called the \"Scientific style\" because it aims to inform with facts and information.", A: "True", B: "False", C: "", D: "", ans: "1" },
+        { unit: "Unit 2", file: "Unit2_L3-5.pptx", main: "أسلوب الكتابة الإدارية وقواعد الإملاء والترقيم (Administrative Style & Mechanics)", sub: "الأسلوب الإداري والعلمي وعلامات الترقيم (Administrative Style & Punctuation)", type: "True / False", question: "Using colloquial (slang) language in official administrative messages is acceptable for daily routines.", A: "True", B: "False", C: "", D: "", ans: "2" },
+        { unit: "Unit 2", file: "Unit2_L3-5.pptx", main: "أسلوب الكتابة الإدارية وقواعد الإملاء والترقيم (Administrative Style & Mechanics)", sub: "الأسلوب الإداري والعلمي وعلامات الترقيم (Administrative Style & Punctuation)", type: "True / False", question: "The more correct the language and drafting, the clearer the report will be to fulfill its purpose.", A: "True", B: "False", C: "", D: "", ans: "1" },
+        { unit: "Unit 2", file: "Unit2_L3-5.pptx", main: "أسلوب الكتابة الإدارية وقواعد الإملاء والترقيم (Administrative Style & Mechanics)", sub: "الأسلوب الإداري والعلمي وعلامات الترقيم (Administrative Style & Punctuation)", type: "True / False", question: "Committing to grammar rules and avoiding spelling mistakes are core elements of sound writing.", A: "True", B: "False", C: "", D: "", ans: "1" },
+        { unit: "Unit 2", file: "Unit2_L3-5.pptx", main: "أسلوب الكتابة الإدارية وقواعد الإملاء والترقيم (Administrative Style & Mechanics)", sub: "الأسلوب الإداري والعلمي وعلامات الترقيم (Administrative Style & Punctuation)", type: "True / False", question: "You should avoid using difficult or outdated words and replace them with common, simple words.", A: "True", B: "False", C: "", D: "", ans: "1" },
+        { unit: "Unit 2", file: "Unit2_L3-5.pptx", main: "أسلوب الكتابة الإدارية وقواعد الإملاء والترقيم (Administrative Style & Mechanics)", sub: "الأسلوب الإداري والعلمي وعلامات الترقيم (Administrative Style & Punctuation)", type: "True / False", question: "Eloquence (Balagha) means complete clarity without confusing meanings, while \"Fluency\" (Fasaha) means putting words in their proper place.", A: "True", B: "False", C: "", D: "", ans: "2" },
+        { unit: "Unit 2", file: "Unit2_L3-5.pptx", main: "أسلوب الكتابة الإدارية وقواعد الإملاء والترقيم (Administrative Style & Mechanics)", sub: "الأسلوب الإداري والعلمي وعلامات الترقيم (Administrative Style & Punctuation)", type: "True / False", question: "Failing to refer pronouns back to their proper subjects is a common mistake that causes ambiguity.", A: "True", B: "False", C: "", D: "", ans: "1" },
+        { unit: "Unit 2", file: "Unit2_L3-5.pptx", main: "أسلوب الكتابة الإدارية وقواعد الإملاء والترقيم (Administrative Style & Mechanics)", sub: "الأسلوب الإداري والعلمي وعلامات الترقيم (Administrative Style & Punctuation)", type: "True / False", question: "In formal Arabic business writing, it is more accurate to say \"Adel apologizes for not attending\" rather than \"Adel apologizes for attending\".", A: "True", B: "False", C: "", D: "", ans: "1" },
+        { unit: "Unit 2", file: "Unit2_L3-5.pptx", main: "أسلوب الكتابة الإدارية وقواعد الإملاء والترقيم (Administrative Style & Mechanics)", sub: "الأسلوب الإداري والعلمي وعلامات الترقيم (Administrative Style & Punctuation)", type: "True / False", question: "It is highly advised to use emotional, imprecise phrasing (such as disaster, terrible, massive) to show the urgency of a report.", A: "True", B: "False", C: "", D: "", ans: "2" },
+        { unit: "Unit 2", file: "Unit2_L3-5.pptx", main: "أسلوب الكتابة الإدارية وقواعد الإملاء والترقيم (Administrative Style & Mechanics)", sub: "الأسلوب الإداري والعلمي وعلامات الترقيم (Administrative Style & Punctuation)", type: "True / False", question: "Good handwriting is considered one of the elements of sound and clear writing when not using a computer.", A: "True", B: "False", C: "", D: "", ans: "1" },
+        { unit: "Unit 2", file: "Unit2_L3-5.pptx", main: "أسلوب الكتابة الإدارية وقواعد الإملاء والترقيم (Administrative Style & Mechanics)", sub: "الأسلوب الإداري والعلمي وعلامات الترقيم (Administrative Style & Punctuation)", type: "True / False", question: "Replacing a letter with another that sounds similar but changes the meaning (e.g., in Arabic: Zaky / Thaky) is an acceptable practice.", A: "True", B: "False", C: "", D: "", ans: "2" },
+        { unit: "Unit 2", file: "Unit2_L3-5.pptx", main: "المبني للمعلوم والمبني للمجهول (Active vs Passive Voice)", sub: "المبني للمعلوم والمجهول (Active vs Passive)", type: "MCQ", question: "When should you use the passive voice in business writing?", A: "To make sentences more energetic.", B: "To de-emphasize an unfamiliar subject or actor.", C: "To cut unnecessary words.", D: "To make the writing more direct.", ans: "2" },
+        { unit: "Unit 2", file: "Unit2_L3-5.pptx", main: "رسائل الأخبار السلبية والاعتذارات (Delivering Bad-News Messages)", sub: "إستراتيجيات رسائل الأخبار السلبية (Bad-News Messages)", type: "MCQ", question: "What is the most critical factor (the \"key\") when delivering bad news?", A: "Speed", B: "Trust", C: "Hiding the facts", D: "Using complex vocabulary", ans: "2" },
+        { unit: "Unit 2", file: "Unit2_L3-5.pptx", main: "رسائل الأخبار السلبية والاعتذارات (Delivering Bad-News Messages)", sub: "إستراتيجيات رسائل الأخبار السلبية (Bad-News Messages)", type: "MCQ", question: "Which of the following is an example of a neutral opening for a bad-news message?", A: "Our company has enjoyed a positive relationship for years.", B: "We are terminating your contract immediately.", C: "I visited your restaurant with a friend to have lunch.", D: "You made a terrible mistake in our order.", ans: "3" },
+        { unit: "Unit 2", file: "Unit2_L3-5.pptx", main: "رسائل الأخبار السلبية والاعتذارات (Delivering Bad-News Messages)", sub: "إستراتيجيات رسائل الأخبار السلبية (Bad-News Messages)", type: "MCQ", question: "Which of the following words should be avoided when writing a bad-news message?", A: "Unfortunately", B: "Regret", C: "Mistake", D: "All of the above", ans: "4" },
+        { unit: "Unit 2", file: "Unit2_L3-5.pptx", main: "رسائل الأخبار السلبية والاعتذارات (Delivering Bad-News Messages)", sub: "إستراتيجيات رسائل الأخبار السلبية (Bad-News Messages)", type: "MCQ", question: "What is the main purpose of \"Buffers\" in a negative message?", A: "To highlight the refusal clearly.", B: "To postpone the negative message and put the reader in a good mood.", C: "To list all the mistakes the reader made.", D: "To close the message optimistically.", ans: "2" },
+        { unit: "Unit 2", file: "Unit2_L3-5.pptx", main: "رسائل الأخبار السلبية والاعتذارات (Delivering Bad-News Messages)", sub: "إستراتيجيات رسائل الأخبار السلبية (Bad-News Messages)", type: "MCQ", question: "According to the components of a negative message, which of the following is frequently used as a buffer?", A: "Facts", B: "Good News", C: "Statement of Values", D: "All of the above", ans: "4" },
+        { unit: "Unit 2", file: "Unit2_L3-5.pptx", main: "رسائل الأخبار السلبية والاعتذارات (Delivering Bad-News Messages)", sub: "إستراتيجيات رسائل الأخبار السلبية (Bad-News Messages)", type: "MCQ", question: "Where should the \"Refusal\" be placed in a negative message?", A: "In the subject line", B: "In a completely separate paragraph to stand out", C: "In the same paragraph as the reason", D: "In the buffer statement", ans: "3" },
+        { unit: "Unit 2", file: "Unit2_L3-5.pptx", main: "أسلوب الكتابة الإدارية وقواعد الإملاء والترقيم (Administrative Style & Mechanics)", sub: "الأسلوب الإداري والعلمي وعلامات الترقيم (Administrative Style & Punctuation)", type: "MCQ", question: "What is the primary goal of the \"Administrative writing style\"?", A: "Influencing and conveying personal feelings.", B: "Informing with facts and information logically and precisely.", C: "Showing the writer's literary skills.", D: "Using strange and complex vocabulary.", ans: "2" },
+        { unit: "Unit 2", file: "Unit2_L3-5.pptx", main: "أسلوب الكتابة الإدارية وقواعد الإملاء والترقيم (Administrative Style & Mechanics)", sub: "الأسلوب الإداري والعلمي وعلامات الترقيم (Administrative Style & Punctuation)", type: "MCQ", question: "Which of the following is considered a common mistake in administrative writing?", A: "Avoiding spelling mistakes.", B: "Saying \"Adel apologizes for not attending\".", C: "Saying \"Adel apologizes for attending\".", D: "Placing two dots on the feminine Taa (التاء المربوطة).", ans: "3" },
+        { unit: "Unit 2", file: "Unit2_L3-5.pptx", main: "أسلوب الكتابة الإدارية وقواعد الإملاء والترقيم (Administrative Style & Mechanics)", sub: "الأسلوب الإداري والعلمي وعلامات الترقيم (Administrative Style & Punctuation)", type: "MCQ", question: "Which punctuation mark is used to clarify what comes after it and distinguish what comes before it (e.g., after \"He said\")?", A: "Semicolon (;)", B: "Colon (:)", C: "Exclamation mark (!)", D: "Parentheses ( )", ans: "2" },
+        { unit: "Unit 2", file: "Unit2_L3-5.pptx", main: "أسلوب الكتابة الإدارية وقواعد الإملاء والترقيم (Administrative Style & Mechanics)", sub: "الأسلوب الإداري والعلمي وعلامات الترقيم (Administrative Style & Punctuation)", type: "MCQ", question: "What does \"Balagha\" (Eloquence) exactly mean in the elements of sound writing?", A: "Complete clarity so meanings don't get confused.", B: "Putting speech in its appropriate and suitable place.", C: "Using very difficult words.", D: "Making the message excessively long.", ans: "2" },
+        { unit: "Unit 2", file: "Unit2_L3-5.pptx", main: "أسلوب الكتابة الإدارية وقواعد الإملاء والترقيم (Administrative Style & Mechanics)", sub: "الأسلوب الإداري والعلمي وعلامات الترقيم (Administrative Style & Punctuation)", type: "MCQ", question: "Which of the following words is an example of \"Inaccurate emotional phrasing\" that should be AVOIDED in administrative writing?", A: "Disaster", B: "Massive", C: "Terrible", D: "All of the above", ans: "4" }
+    ];
+
+    // =========================================================
+    // [2] دوال الفلترة التفاعلية (المترابطة)
+    // =========================================================
+    function populateSelect(selectId, optionsArray) {
+        const select = document.getElementById(selectId);
+        select.innerHTML = '<option value="">الكل</option>';
+        optionsArray.forEach(opt => {
+            select.innerHTML += `<option value="${opt}">${opt}</option>`;
+        });
+    }
+
+    // لما الوحدة تتغير: نحدث الملفات ونفضي الباقي
+    function updateFiles() {
+        const unit = document.getElementById('filterUnit').value;
+        const filtered = unit ? allQuestions.filter(q => q.unit === unit) : allQuestions;
+        const files = [...new Set(filtered.map(q => q.file))];
+        populateSelect('filterFile', files);
+        updateTopics(); // نحدث التوبكس
+    }
+
+    // لما الملف يتغير: نحدث التوبكس ونفضي الباقي
+    function updateTopics() {
+        const unit = document.getElementById('filterUnit').value;
+        const file = document.getElementById('filterFile').value;
+        
+        let filtered = allQuestions;
+        if (unit) filtered = filtered.filter(q => q.unit === unit);
+        if (file) filtered = filtered.filter(q => q.file === file);
+
+        const mains = [...new Set(filtered.map(q => q.main))];
+        populateSelect('filterMain', mains);
+        updateSubTopics(); // نحدث السب توبكس
+    }
+
+    // لما التوبك يتغير: نحدث السب توبكس
+    function updateSubTopics() {
+        const unit = document.getElementById('filterUnit').value;
+        const file = document.getElementById('filterFile').value;
+        const main = document.getElementById('filterMain').value;
+        
+        let filtered = allQuestions;
+        if (unit) filtered = filtered.filter(q => q.unit === unit);
+        if (file) filtered = filtered.filter(q => q.file === file);
+        if (main) filtered = filtered.filter(q => q.main === main);
+
+        const subs = [...new Set(filtered.map(q => q.sub))];
+        populateSelect('filterSub', subs);
+    }
+
+    // تعبئة القوائم لأول مرة عند تحميل الصفحة
+    function initFilters() {
+        const units = [...new Set(allQuestions.map(q => q.unit))];
+        const types = [...new Set(allQuestions.map(q => q.type))];
+        populateSelect('filterUnit', units);
+        populateSelect('filterType', types);
+        updateFiles(); // دي هتطلق باقي التحديثات
+    }
+    initFilters();
+
+    // =========================================================
+    // [3] إعدادات الحماية البسيطة
+    // =========================================================
+    document.addEventListener('contextmenu', e => e.preventDefault());
+    document.addEventListener('keydown', e => {
+        if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J'))) {
+            e.preventDefault();
+            alert("غير مسموح بفتح أدوات المطور.");
+        }
+    });
+
+    // =========================================================
+    // [4] متغيرات الاختبار
+    // =========================================================
+    let quizQuestions = [];
+    let userAnswers = [];
+    let currentIndex = 0;
+
+    // =========================================================
+    // [5] بدء الاختبار
+    // =========================================================
+    function startQuiz() {
+        const num = parseInt(document.getElementById('numQuestions').value);
+        const fUnit = document.getElementById('filterUnit').value;
+        const fFile = document.getElementById('filterFile').value;
+        const fMain = document.getElementById('filterMain').value;
+        const fSub = document.getElementById('filterSub').value;
+        const fType = document.getElementById('filterType').value;
+
+        let filtered = allQuestions.filter(q => 
+            (!fUnit || q.unit === fUnit) &&
+            (!fFile || q.file === fFile) &&
+            (!fMain || q.main === fMain) &&
+            (!fSub || q.sub === fSub) &&
+            (!fType || q.type === fType)
+        );
+
+        if (filtered.length === 0) return alert("لا توجد أسئلة مطابقة للفلترة المحددة.");
+
+        filtered = filtered.sort(() => 0.5 - Math.random());
+        quizQuestions = filtered.slice(0, num);
+        
+        userAnswers = new Array(quizQuestions.length).fill(null);
+        
+        document.getElementById('setupScreen').style.display = 'none';
+        document.getElementById('quizScreen').style.display = 'block';
+        
+        currentIndex = 0;
+        showQuestion();
+    }
+
+    // =========================================================
+    // [6] عرض السؤال
+    // =========================================================
+    function showQuestion() {
+        const q = quizQuestions[currentIndex];
+        const savedChoice = userAnswers[currentIndex];
+        
+        document.getElementById('progressText').innerText = `السؤال ${currentIndex + 1} من ${quizQuestions.length}`;
+        document.getElementById('questionText').innerText = q.question;
+        
+        const optionsContainer = document.getElementById('optionsContainer');
+        optionsContainer.innerHTML = '';
+        
+        const letters = ['A', 'B', 'C', 'D'];
+        letters.forEach((letter, index) => {
+            if (q[letter] && q[letter].trim() !== "") {
+                const div = document.createElement('div');
+                div.className = 'option';
+                div.innerText = `${letter}) ${q[letter]}`;
+                
+                // لو فيه إجابة محفوظة، نعلم عليها كلون أزرق
+                if (savedChoice === String(index + 1)) {
+                    div.classList.add('selected');
+                }
+                
+                div.onclick = () => selectOption(div, String(index + 1)); 
+                optionsContainer.appendChild(div);
+            }
+        });
+
+        document.getElementById('prevBtn').style.display = currentIndex === 0 ? 'none' : 'block';
+        document.getElementById('nextBtn').style.display = 'block';
+        document.getElementById('nextBtn').innerText = (currentIndex === quizQuestions.length - 1) ? "عرض النتيجة" : "التالي";
+        
+        document.getElementById('revealBtn').style.display = 'block';
+        document.getElementById('feedbackText').style.display = 'none';
+        
+        document.querySelectorAll('.option').forEach(opt => {
+            opt.classList.remove('correct', 'wrong', 'disabled');
+        });
+    }
+
+    // =========================================================
+    // [7] اختيار الإجابة (التسجيل الفوري)
+    // =========================================================
+    function selectOption(element, ansValue) {
+        document.querySelectorAll('.option').forEach(opt => opt.classList.remove('selected'));
+        element.classList.add('selected');
+        userAnswers[currentIndex] = ansValue;
+    }
+
+    // =========================================================
+    // [8] عرض الإجابة الصحيحة
+    // =========================================================
+    function revealAnswer() {
+        const q = quizQuestions[currentIndex];
+        const savedChoice = userAnswers[currentIndex];
+        
+        if (!savedChoice) {
+            alert("من فضلك اختر إجابة أولاً قبل عرض الإجابة الصحيحة.");
+            return;
+        }
+        
+        const options = document.querySelectorAll('.option');
+        const feedback = document.getElementById('feedbackText');
+        const letters = ['A', 'B', 'C', 'D'];
+        let optionIndex = 0;
+        
+        letters.forEach((letter, i) => {
+            if (q[letter] && q[letter].trim() !== "") {
+                const opt = options[optionIndex];
+                opt.classList.add('disabled');
+                opt.classList.remove('selected');
+                
+                if (String(i + 1) === q.ans) opt.classList.add('correct');
+                if (String(i + 1) === savedChoice && savedChoice !== q.ans) opt.classList.add('wrong');
+                
+                optionIndex++;
+            }
+        });
+
+        if (savedChoice === q.ans) {
+            feedback.innerText = "✅ إجابة صحيحة!";
+            feedback.style.color = "#27ae60";
+            feedback.style.backgroundColor = "#eafaf1";
+        } else {
+            feedback.innerText = `❌ إجابة خاطئة. الإجابة الصحيحة هي: (${letters[parseInt(q.ans) - 1]})`;
+            feedback.style.color = "#e74c3c";
+            feedback.style.backgroundColor = "#fdedec";
+        }
+        feedback.style.display = 'block';
+        document.getElementById('revealBtn').style.display = 'none';
+    }
+
+    // =========================================================
+    // [9] التنقل بين الأسئلة
+    // =========================================================
+    function prevQuestion() {
+        if (currentIndex > 0) {
+            currentIndex--;
+            showQuestion();
+        }
+    }
+
+    function nextQuestion() {
+        if (currentIndex === quizQuestions.length - 1) {
+            showResult();
+        } else {
+            currentIndex++;
+            showQuestion();
+        }
+    }
+
+    // =========================================================
+    // [10] عرض النتيجة النهائية
+    // =========================================================
+    function showResult() {
+        document.getElementById('quizScreen').style.display = 'none';
+        document.getElementById('resultScreen').style.display = 'block';
+        
+        let score = 0;
+        let wrong = 0;
+        
+        quizQuestions.forEach((q, i) => {
+            if (userAnswers[i]) {
+                if (userAnswers[i] === q.ans) {
+                    score++;
+                } else {
+                    wrong++;
+                }
+            }
+        });
+        
+        const totalAnswered = score + wrong;
+        const percentage = totalAnswered > 0 ? Math.round((score / totalAnswered) * 100) : 0;
+        
+        document.getElementById('scoreText').innerText = `${percentage}%`;
+        document.getElementById('correctCount').innerText = score;
+        document.getElementById('wrongCount').innerText = wrong;
+        document.getElementById('totalCount').innerText = totalAnswered;
+        
+        let msg = `لقد أجبت بشكل صحيح على ${score} أسئلة من أصل ${totalAnswered} سؤال قمت بحلهم.`;
+        if (totalAnswered < quizQuestions.length) {
+            msg += `<br>⚠️ لم تقم بالإجابة على ${quizQuestions.length - totalAnswered} سؤال.`;
+        }
+        if (percentage === 100 && totalAnswered > 0) msg += "<br>🎉 ممتاز! أداء مثالي!";
+        else if (percentage >= 70) msg += "<br>💪 جيد جداً! استمر في التقدم.";
+        else if (percentage >= 50) msg += "<br>📖 مقبول، تحتاج إلى مراجعة بسيطة.";
+        else if (totalAnswered > 0) msg += "<br>📚 يجب عليك مراجعة المادة جيداً.";
+        
+        document.getElementById('scoreDetails').innerHTML = msg;
+        
+        document.getElementById('viewWrongBtn').style.display = wrong > 0 ? 'block' : 'none';
+    }
+
+    // =========================================================
+    // [11] عرض الأسئلة الخطأ
+    // =========================================================
+    function viewWrongAnswers() {
+        document.getElementById('resultScreen').style.display = 'none';
+        document.getElementById('wrongReviewScreen').style.display = 'block';
+        
+        const container = document.getElementById('wrongContainer');
+        container.innerHTML = '';
+        
+        const letters = ['A', 'B', 'C', 'D'];
+        let wrongCount = 0;
+        
+        quizQuestions.forEach((q, i) => {
+            if (userAnswers[i] && userAnswers[i] !== q.ans) {
+                wrongCount++;
+                const userChoice = userAnswers[i];
+                const userLetter = letters[parseInt(userChoice) - 1];
+                const userText = q[userLetter];
+                const correctLetter = letters[parseInt(q.ans) - 1];
+                const correctText = q[correctLetter];
+                
+                const card = document.createElement('div');
+                card.className = 'wrong-card';
+                card.innerHTML = `
+                    <div class="q-text">${i + 1}. ${q.question}</div>
+                    <div class="your-ans">❌ إجابتك: (${userLetter}) ${userText}</div>
+                    <div class="correct-ans">✅ الإجابة الصحيحة: (${correctLetter}) ${correctText}</div>
+                `;
+                container.appendChild(card);
+            }
+        });
+        
+        if (wrongCount === 0) {
+            container.innerHTML = '<p style="text-align:center; font-size:18px; color:#27ae60;">🎉 ممتاز! لم تخطئ في أي سؤال قمت بإجابته.</p>';
+        }
+    }
+
+    // =========================================================
+    // [12] الرجوع للنتيجة
+    // =========================================================
+    function backToResult() {
+        document.getElementById('wrongReviewScreen').style.display = 'none';
+        document.getElementById('resultScreen').style.display = 'block';
+    }
+</script>
+
+</body>
+</html>
